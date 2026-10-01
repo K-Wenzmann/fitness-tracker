@@ -124,6 +124,21 @@
   :where(input[type="text"], input[type="number"], input[type="date"], select, textarea) { color: var(--foreground); }
   :where(.dark) :where(input[type="text"], input[type="number"], input[type="date"], select, textarea) { background-color: var(--input-background); }
 
+  /* Phones: brand + theme/backup buttons on the first row, tabs full width on the second */
+  @media (max-width: 639px) {
+    header .hdr-row { flex-wrap: wrap; row-gap: .6rem; padding-top: .6rem; padding-bottom: .6rem; }
+    header .hdr-brand { flex: 1 1 0; min-width: 0; }
+    header .hdr-title { min-width: 0; }
+    header .hdr-title p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    header .hdr-right { display: contents; }
+    header .hdr-actions { order: 2; gap: .5rem; flex-shrink: 0; }
+    header .hdr-tabs { order: 3; display: flex; width: 100%; }
+    header .hdr-tabs .tab-trigger { flex: 1 1 0; justify-content: center; }
+    .btn-outline { white-space: nowrap; }
+    .card-headline { flex-wrap: wrap; }
+    .card-headline .actions { min-width: 0; max-width: 100%; }
+    .select-trigger { max-width: 100%; min-width: 0; }   /* long option labels no longer stretch the page */
+  }
 </style>
 </head>
 <body>
@@ -762,21 +777,22 @@
         };
         return (
           <header className="sticky top-0 z-50 border-b glass-header" style={{borderColor:'var(--border)'}}>
-            <div className="max-w-[96rem] mx-auto px-4 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div className="max-w-[96rem] mx-auto px-4 py-4 flex items-center justify-between hdr-row">
+              <div className="flex items-center gap-3 hdr-brand">
                 <button className={`app-logo ${state.logoStyle}`} title="Left-click: change style. Right-click: change icon." onClick={handleLogoClick} onContextMenu={handleLogoContextMenu}>
                     {state.logoGlyph==='ring' ? <LogoRing/> : <LogoTrend/>}
                 </button>
-                <div>
+                <div className="hdr-title">
                   <h1 className="text-base font-semibold" style={{background:'linear-gradient(135deg, var(--foreground) 0%, color-mix(in srgb, var(--foreground) 70%, transparent) 100%)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent'}}>Fitness Tracker</h1>
                   <p className="text-xs" style={{color:'var(--muted-foreground)'}}>Minimal Full-Body Home Plan</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="tabs-list">
+              <div className="flex items-center gap-3 hdr-right">
+                <div className="tabs-list hdr-tabs">
                   <button className={`tab-trigger ${activeTab==='dashboard'?'active':''}`} onClick={()=>setActiveTab('dashboard')}><Target className="icon-primary" size={16}/><span className="ml-2">Dashboard</span></button>
                   <button className={`tab-trigger ${activeTab==='progress'?'active':''}`} onClick={()=>setActiveTab('progress')}><TrendingUp className="icon-primary" size={16}/><span className="ml-2">Progress</span></button>
                 </div>
+                <div className="flex items-center gap-3 hdr-actions">
                 <Button variant="ghost" size="sm" onClick={()=>setState(p=>({...p, theme: document.documentElement.classList.contains('dark')?'light':'dark'}))}>
                   {document.documentElement.classList.contains('dark') ? <Sun className="icon-primary"/> : <Moon className="icon-primary"/>}
                 </Button>
@@ -786,6 +802,7 @@
                   </Button>
                   {backupDue && <span style={{position:'absolute', top:3, right:3, width:9, height:9, borderRadius:9999, background:'#d97706', boxShadow:'0 0 0 2px var(--background)'}}/>}
                 </span>
+                </div>
               </div>
             </div>
           </header>
