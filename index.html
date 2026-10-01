@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#06b6d4" />
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
+  <script>if (/^https?:$/.test(location.protocol)) { var ml = document.createElement("link"); ml.rel = "manifest"; ml.href = "manifest.json"; document.head.appendChild(ml); }</script>
+  <title>Fitness Tracker - Minimal Full-Body Home Plan</title>
+  <meta name="description" content="A simple yet powerful full‑body fitness tracker designed for minimal equipment. Log sets and reps, track weekly progress and stay motivated on the go." />
+  <meta name="author" content="Fitness Tracker" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Fitness Tracker - Minimal Full‑Body Home Plan" />
+  <meta property="og:description" content="Log sets and reps, track progress and stay on track with your workouts wherever you are." />
+  <meta property="og:image" content="icons/icon-512x512.png" />
+  <meta property="og:url" content="." />
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICA8cmVjdCB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHJ4PSI0IiBmaWxsPSIjMGIxMjIwIi8+CiAgPHBhdGggZD0iTTMgMTZsNi02IDQgNCA4LTgiIHN0cm9rZT0iI2NiZDVlMSIgc3Ryb2tlLXdpZHRoPSIyLjIiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Rva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPHBhdGggZD0iTTE2IDZoNXY1IiBzdHJva2U9IiNjYmQ1ZTEiIHN0cm9rZS13aWR0aD0iMi4yIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+">
+  <style>
+    :root{--font-size:14px;--background:#fafafa;--foreground:#1a1a1a;--card:#ffffff;--card-foreground:#1a1a1a;--popover:#ffffff;--popover-foreground:#1a1a1a;--primary:#2c3e50;--primary-foreground:#ffffff;--secondary:#f8f9fa;--secondary-foreground:#2c3e50;--muted:#f1f5f9;--muted-foreground:#64748b;--accent:#e2e8f0;--accent-foreground:#2c3e50;--destructive:#dc2626;--destructive-foreground:#ffffff;--border:rgba(0,0,0,.08);--input:transparent;--input-background:#f8fafc;--switch-background:#cbd5e1;--ring:#3b82f6;--radius:.625rem;--primary-soft:linear-gradient(135deg,#0ea5e9 0%,#0369a1 100%);--primary-soft-hover:linear-gradient(135deg,#0284c7 0%,#075985 100%);--success-soft:linear-gradient(135deg,#0ea5e9 0%,#0369a1 100%);--success-soft-hover:linear-gradient(135deg,#0284c7 0%,#075985 100%);--warning-soft:linear-gradient(135deg,#d97706 0%,#b45309 100%);--warning-soft-hover:linear-gradient(135deg,#b45309 0%,#92400e 100%);--danger-soft:linear-gradient(135deg,#dc2626 0%,#b91c1c 100%);--danger-soft-hover:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);--neutral-soft:linear-gradient(135deg,#6b7280 0%,#4b5563 100%)}
+    .dark{--background:#0f172a;--foreground:#f8fafc;--card:#1e293b;--card-foreground:#f8fafc;--popover:#1e293b;--popover-foreground:#f8fafc;--primary:#f8fafc;--primary-foreground:#1e293b;--secondary:#334155;--secondary-foreground:#f8fafc;--muted:#334155;--muted-foreground:#a3b3c8;--accent:#475569;--accent-foreground:#f8fafc;--destructive:#ef4444;--destructive-foreground:#f8fafc;--border:rgba(255,255,255,.08);--input:#334155;--ring:#06b6d4;--input-background:#0b1325;--primary-soft:linear-gradient(135deg,#22d3ee 0%,#06b6d4 100%);--primary-soft-hover:linear-gradient(135deg,#06b6d4 0%,#0891b2 100%);--success-soft:linear-gradient(135deg,#22d3ee 0%,#06b6d4 100%);--success-soft-hover:linear-gradient(135deg,#06b6d4 0%,#0891b2 100%);--warning-soft:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);--warning-soft-hover:linear-gradient(135deg,#d97706 0%,#b45309 100%);--danger-soft:linear-gradient(135deg,#f87171 0%,#ef4444 100%);--danger-soft-hover:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);--neutral-soft:linear-gradient(135deg,#9ca3af 0%,#6b7280 100%)}
+    body{background:var(--background);color:var(--foreground);font-size:var(--font-size);line-height:1.6}
+    .card{background:var(--card);color:var(--card-foreground);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06)}
+    .btn-primary{background:var(--primary-soft);color:#fff;border:none;transition:.2s;font-weight:500}
+    .btn-primary:hover{background:var(--primary-soft-hover);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+    .btn-success{background:var(--success-soft);color:#fff;border:none;transition:.2s;font-weight:500}
+    .btn-success:hover{background:var(--success-soft-hover);box-shadow:0 2px 6px rgba(16,185,129,.25)}
+    .btn-warning{background:var(--warning-soft);color:#fff;border:none;transition:.2s;font-weight:500}
+    .btn-warning:hover{background:var(--warning-soft-hover);box-shadow:0 2px 6px rgba(217,119,6,.25)}
+    .btn-danger{background:var(--danger-soft);color:#fff;border:none;transition:.2s;font-weight:500}
+    .btn-danger:hover{background:var(--danger-soft-hover);box-shadow:0 2px 6px rgba(220,38,38,.25)}
+    .btn-ghost{background:transparent;color:var(--foreground);border:1px solid var(--border);transition:.2s}
+    .btn-ghost:hover{background:var(--accent);color:var(--accent-foreground);border-color:var(--border)}
+    .btn-outline{background:transparent;color:var(--foreground);border:1px solid var(--border);transition:.2s}
+    .btn-outline:hover{background:var(--muted);border-color:var(--border)}
+    .input{background:var(--input-background);border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);padding:.75rem;color:var(--foreground);transition:.2s}
+    .textarea{background:var(--input-background);border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);padding:.75rem;color:var(--foreground);transition:.2s;min-height:80px}
+    .badge{background:var(--secondary);color:var(--secondary-foreground);border-radius:calc(var(--radius) - 4px);padding:.25rem .75rem;font-size:.75rem;font-weight:500;border:1px solid var(--border)}
+    .progress-container{width:100%;height:8px;background:var(--muted);border-radius:9999px;overflow:hidden}
+    .progress-bar{height:100%;background:var(--success-soft);border-radius:9999px;transition:width .3s ease}
+    .tabs-list{background:var(--muted);border-radius:calc(var(--radius) + 6px);padding:.35rem;border:1px solid var(--border);box-shadow:0 1px 0 rgba(0,0,0,.02);display:inline-flex;align-items:center;gap:.25rem}
+    .tab-trigger{display:inline-flex;align-items:center;gap:.5rem;height:42px;padding:0 .95rem;border-radius:calc(var(--radius) - 2px);font-weight:600;letter-spacing:.1px;color:var(--foreground);border:none;background:transparent}
+    .tab-trigger .icon-primary{color:color-mix(in srgb, var(--foreground) 55%, transparent);opacity:.8;transition:color .15s ease, opacity .15s ease}
+    .tab-trigger:hover{background:color-mix(in srgb, var(--muted) 70%, transparent)}
+    .tab-trigger.active{background:var(--primary-soft);color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+    .tab-trigger.active .icon-primary{color:#fff;opacity:.95}
+    .select-trigger{background:var(--input-background);border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);padding:.5rem 1rem;transition:.2s}
+    .switch{position:relative;display:inline-block;width:44px;height:24px}
+    .switch input{opacity:0;width:0;height:0}
+    .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--switch-background);transition:.3s;border-radius:24px}
+    .slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:#fff;transition:.3s;border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,.2)}
+    input:checked + .slider{background:var(--success-soft)}
+    input:checked + .slider:before{transform:translateX(20px)}
+    .hover-lift{transition:.2s}
+    .hover-lift:hover{box-shadow:0 6px 16px rgba(0,0,0,.12)}
+    .icon-primary{color:#64748b}.icon-success{color:#0ea5e9}
+    .dark .icon-primary{color:var(--muted-foreground)}
+    .percent-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.125rem .5rem;border-radius:9999px;font-size:.75rem;font-weight:600;background:rgba(8,145,178,.10);color:#0891b2}
+    html.dark .percent-chip{background:rgba(34,211,238,.15);color:#67e8f9}
+    .seg{display:inline-flex;align-items:center;gap:2px;padding:3px;background:var(--muted);border:1px solid var(--border);border-radius:calc(var(--radius) - 1px)}
+    .seg button{height:26px;padding:0 .85rem;font-size:.75rem;font-weight:600;letter-spacing:.1px;border-radius:calc(var(--radius) - 4px);color:var(--muted-foreground);background:transparent;border:none;cursor:pointer;transition:background .15s ease,color .15s ease,box-shadow .15s ease}
+    .seg button:hover{color:var(--foreground)}
+    .seg button.on{background:var(--primary-soft);color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+    .table{width:100%;border-collapse:separate;border-spacing:0}
+    .table th,.table td{padding:.65rem .75rem;border-bottom:1px solid var(--border)}
+    .table th{font-weight:600;color:var(--muted-foreground);text-align:left}
+    .table tr:last-child td{border-bottom:none}
+    .link{color:#0ea5e9}
+    html.dark .link{color:#7dd3fc}
+    .week-strip{display:flex;align-items:center;gap:.35rem}
+    .day-pill{min-width:34px;height:30px;padding:0 .5rem;border-radius:999px;border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem;opacity:.9;cursor:pointer;user-select:none;background:var(--card)}
+    .day-pill:hover{opacity:1}
+    .day-pill.rest{opacity:.6}
+    .day-pill.train{background:rgba(8,145,178,.12);border-color:rgba(8,145,178,.35);color:#0b7285}
+    html.dark .day-pill.train{background:rgba(34,211,238,.15);border-color:rgba(34,211,238,.45);color:#67e8f9}
+    .day-pill.today{box-shadow:0 0 0 2px color-mix(in srgb,var(--primary) 25%, transparent)}
+    .day-pill .dot{width:6px;height:6px;border-radius:999px;margin-left:.35rem;background:#06b6d4}
+    html.dark .day-pill .dot{background:#22d3ee}
+    .day-pill-sm{min-width:28px;height:26px;padding:0 .4rem;font-size:.75rem}
+    .app-logo{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;cursor:pointer;transition:box-shadow .15s ease, transform .15s ease}
+    .app-logo.soft{background:var(--primary-soft); color:#fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);}
+    .dark .app-logo.soft{box-shadow: inset 0 0 0 1px rgba(0,0,0,.25);}
+    .app-logo.solid{background:#06b6d4; color:#fff; box-shadow:0 1px 2px rgba(0,0,0,.12), inset 0 0 0 1px rgba(255,255,255,.14);}
+    .dark .app-logo.solid{background:#0891b2; box-shadow:0 1px 2px rgba(0,0,0,.3), inset 0 0 0 1px rgba(255,255,255,.12);}
+    .app-logo.outline{background:transparent; color:#06b6d4; border:1.5px solid #06b6d4;}
+    .dark .app-logo.outline{color:#22d3ee; border-color:#22d3ee; background:rgba(34,211,238,.08);}
+    .app-logo.duotone{background:linear-gradient(135deg,#8b5cf6 0%,#06b6d4 100%); color:#fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);}
+    .app-logo svg{width:22px;height:22px;stroke:currentColor}
+    header .btn-ghost{width:42px;height:42px;padding:0;border-radius:calc(var(--radius) + 6px);display:inline-flex;align-items:center;justify-content:center;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+    header .btn-ghost:hover{background:color-mix(in srgb, var(--muted) 70%, transparent)}
+    .glass-header{background:color-mix(in srgb, var(--card) 72%, transparent);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2)}
+    html.dark .glass-header{background:color-mix(in srgb, var(--card) 58%, transparent)}
+    :root { --headline-h: 76px; }
+    .card-headline{height: var(--headline-h); padding-bottom:.5rem; margin-bottom:.75rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:.75rem;}
+    .card-headline .title{display:flex; align-items:center; gap:.6rem;}
+    .card-headline .actions{display:flex; align-items:center; gap:1rem; white-space:nowrap;}
+    @media (max-width: 640px){
+      .card-headline{height:auto; align-items:flex-start;}
+      .card-headline .actions{flex-wrap:wrap; white-space:normal;}
+    }
+    .day-pill.active{background:var(--primary-soft);color:#fff;border-color:transparent}
+    .field-label{font-size:.75rem;color:var(--muted-foreground);margin-bottom:.25rem}
+    .collapse-btn{border-radius:calc(var(--radius) - 2px);}
+    /* Style for repetition input boxes: apply consistent border, rounded corners and internal padding */
+    .reps-input {
+      color: var(--foreground);
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) - 2px);
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+      background: var(--input-background);
+    }
+    .reps-input::placeholder { color: var(--muted-foreground); opacity:.7; }
+  
+  /* Form fields follow the theme. :where() keeps specificity at zero, so .input, .reps-input and utility classes still win. */
+  html.dark { color-scheme: dark; }   /* dark date picker, scrollbars, spinners */
+  :where(input[type="text"], input[type="number"], input[type="date"], select, textarea) { color: var(--foreground); }
+  :where(.dark) :where(input[type="text"], input[type="number"], input[type="date"], select, textarea) { background-color: var(--input-background); }
+
+</style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="env,react">
+    const { useState, useEffect, useRef } = React;
+
+    /* Components */
+    const Card = ({ children, className = "", ...props }) => (
+      <div className={`card hover-lift ${className}`} {...props}>{children}</div>
+    );
+    const Button = ({ children, variant = "primary", size = "default", className = "", onClick, disabled, ...props }) => {
+      const variants = { primary: "btn-primary", success: "btn-success", warning: "btn-warning", danger: "btn-danger", ghost: "btn-ghost", outline: "btn-outline" };
+      const sizes = { default: "h-10 px-4 py-2", sm: "h-8 rounded-md px-3 text-sm", lg: "h-11 rounded-md px-8" };
+      return (<button className={`inline-flex items-center justify-center rounded-md text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 ${variants[variant]} ${sizes[size]} ${className}`} onClick={onClick} disabled={disabled} {...props}>{children}</button>);
+    };
+    const IconBtn = ({title,onClick,children}) => (<button title={title} className="btn-outline h-8 w-8 rounded-md flex items-center justify-center" onClick={onClick}>{children}</button>);
+    const Input = React.forwardRef((p, ref) => <input ref={ref} className={`input ${p.className||''}`} {...p}/>);
+    Input.displayName = 'Input';
+    const Switch = ({ checked, onChange, className = "" }) => (
+      <label className={`switch ${className}`}><input type="checkbox" checked={checked} onChange={(e)=>onChange?.(e.target.checked)} /><span className="slider"></span></label>
+    );
+    const Progress = ({ value }) => (<div className="progress-container"><div className="progress-bar" style={{width: `${Math.min(100,Math.max(0,value))}%`}}/></div>);
+
+    // Rest Timer Card: provides a customizable countdown timer for rest periods between sets.
+    //
+    // The timer state (duration, remaining, running) is scoped within this component so that the countdown
+    // interval does not cause the entire app to re-render.  This component is memoized with React.memo
+    // to preserve its state across parent renders.  Without memoization and defining the component at
+    // the module scope, React would treat a re-declared function as a new component on each render and
+    // unmount the previous timer, resetting its state.  See the dashboard usage for placement.
+    const RestTimerCard = React.memo(() => {
+      // Load persisted duration from localStorage or default to 150 seconds (2:30)
+      const [duration, setDuration] = useState(() => {
+        try {
+          const stored = localStorage.getItem('patrick-minimal-v12:timer-duration');
+          return stored ? Number(stored) : 150;
+        } catch {
+          return 150;
+        }
+      });
+      // Remaining seconds for the countdown; initialise to the chosen duration
+      const [remaining, setRemaining] = useState(() => duration);
+      const [running, setRunning] = useState(false);
+      const intervalRef = useRef(null);
+
+      // Persist the chosen duration whenever it changes.  Also update the remaining time
+      // if the timer is not currently running, so editing the duration resets the next start.
+      useEffect(() => {
+        try {
+          localStorage.setItem('patrick-minimal-v12:timer-duration', String(duration));
+        } catch {
+          /* ignore */
+        }
+        if (!running) setRemaining(duration);
+      }, [duration]);
+
+      // Manage the countdown interval when running
+      useEffect(() => {
+        if (!running) return;
+        intervalRef.current = setInterval(() => {
+          setRemaining(prev => {
+            if (prev <= 1) {
+              clearInterval(intervalRef.current);
+              intervalRef.current = null;
+              setRunning(false);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+        return () => {
+          if (intervalRef.current) clearInterval(intervalRef.current);
+        };
+      }, [running]);
+
+      // Format seconds into MM:SS for display
+      const format = (sec) => {
+        const m = Math.floor(sec / 60).toString().padStart(2, '0');
+        const s = (sec % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+      };
+      // Start the timer; if it has reached zero then reset remaining to the duration first
+      const start = () => {
+        if (remaining === 0) setRemaining(duration);
+        setRunning(true);
+      };
+      const pause = () => {
+        setRunning(false);
+      };
+      const reset = () => {
+        setRunning(false);
+        setRemaining(duration);
+      };
+      return (
+        <Card className="p-6 space-y-4 w-full h-full">
+          <div className="card-headline">
+            <div className="title">
+              <span className="text-xl">⏱️</span>
+              <h3 className="text-lg font-semibold">Rest Timer</h3>
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            {/* Use a native number input for the timer field for consistent padding and styling. */}
+            <input
+              type="number"
+              className="input h-9 w-24"
+              value={duration}
+              onChange={e => setDuration(Math.max(0, Number(e.target.value) || 0))}
+              placeholder="Sec"
+              style={{
+                background: '#f8fafc',
+                color: '#1a1a1a',
+                paddingLeft: '0.75rem',
+                paddingRight: '0.75rem'
+              }}
+            />
+            <Button size="sm" onClick={start}>Start</Button>
+            <Button size="sm" variant="outline" onClick={pause}>Pause</Button>
+            <Button size="sm" variant="outline" onClick={reset}>Reset</Button>
+          </div>
+          <div className="text-center text-4xl font-bold">{format(remaining)}</div>
+        </Card>
+      );
+    });
+
+    /* Icons */
+    const Target=({className="",size=20})=> (<svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>);
+    const TrendingUp=({className="",size=20})=>(<svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>);
+    const Calendar=({className="",size=20})=>(<svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>);
+    const Sun=({className="",size=16})=>(<svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>);
+    const Moon=({className="",size=16})=>(<svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>);
+    const LogoTrend=({size=22})=>(<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4,16 10,10 14,13 20,7"/><polyline points="16,7 20,7 20,11"/></svg>);
+    const LogoRing=({size=22})=>(<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="7" opacity=".25"/><path d="M12 5 a7 7 0 0 1 7 7"/></svg>);
+    const Plus=({size=16})=>(<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>);
+    const Minus=({size=16})=>(<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>);
+    const Trash=({size=16})=>(<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>);
+    const Download=({size=16})=>(<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>);
+    const Broom=({size=16})=>(<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 15l8-8"/><path d="M9 7l8 8"/><path d="M14 12l6 6"/><path d="M3 21l6-6"/></svg>);
+    const Caret=({dir='down',size=14})=>(<svg width={size} height={size} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2'><polyline points={dir==='down'?'6 9 12 15 18 9':'18 15 12 9 6 15'} /></svg>);
+
+    /* ── Real date axis for the daily weight chart ─────────────────────────── */
+    const DAY_MS = 86400000;
+    const isoToDayNum = (iso) => { const [y, m, d] = iso.split('-').map(Number); return Math.round(Date.UTC(y, m - 1, d) / DAY_MS); };
+    const fmtDayNum = (n, opts) => new Date(n * DAY_MS).toLocaleDateString(navigator.language, { timeZone: 'UTC', ...opts });
+    // Tick positions (day numbers) for a date axis: every day / 2 days, then Mondays / every other Monday, then 1st of month(s).
+    const niceDateTicks = (minDay, maxDay, target = 9) => {
+      const span = maxDay - minDay;
+      const lo = Math.ceil(minDay);
+      const ticks = [];
+      const dayStep = [1, 2, 7, 14].find(st => span / st <= target);
+      if (dayStep) {
+        let d = lo;
+        if (dayStep >= 7) d = lo + ((4 - (lo % 7) + 7) % 7);   // day 0 = Thu 1 Jan 1970, so Mondays are day % 7 === 4
+        for (; d <= maxDay; d += dayStep) ticks.push(d);
+        return { ticks, monthly: false };
+      }
+      const monthStep = [1, 2, 3, 6, 12, 24].find(st => span / 30.44 / st <= target) || 60;
+      const first = new Date(lo * DAY_MS);
+      for (let idx = first.getUTCFullYear() * 12 + first.getUTCMonth(); ; idx++) {
+        const day = Date.UTC(Math.floor(idx / 12), idx % 12, 1) / DAY_MS;
+        if (day > maxDay) break;
+        if (day >= minDay && idx % monthStep === 0) ticks.push(day);
+      }
+      return { ticks, monthly: true };
+    };
+
+    /* ── Backup & restore ───────────────────────────────────────────────────
+       A backup is one JSON file holding every localStorage key the app owns. Restoring replaces all
+       current data with the file's content (validated first, rolled back if writing fails). */
+    const BACKUP = {
+      APP: 'fitness-tracker',
+      FORMAT: 1,
+      LAST_KEY: 'patrick-minimal-v12:last-backup',   // bookkeeping only, never part of a backup
+      KEYS: { state: 'patrick-minimal-v12', logs: 'patrick-minimal-v12:log', exercises: 'patrick-minimal-v12:exercises', weights: 'patrick-minimal-v12:weights' },
+      MAX_BYTES: 10 * 1024 * 1024
+    };
+    const isBackupKey = (k) => k !== BACKUP.LAST_KEY && (k === 'patrick-theme' || k.startsWith('patrick-minimal-v12'));
+    const collectBackup = () => {
+      const data = {};
+      Object.keys(localStorage).filter(isBackupKey).sort().forEach(k => {
+        const raw = localStorage.getItem(k);
+        try { data[k] = { json: JSON.parse(raw) }; } catch { data[k] = { raw }; }
+      });
+      return { app: BACKUP.APP, format: BACKUP.FORMAT, exportedAt: new Date().toISOString(), data };
+    };
+    const downloadBackup = () => {
+      const backup = collectBackup();
+      const now = new Date(), pad = (n) => String(n).padStart(2, '0');
+      const stamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `fitness-tracker-backup-${stamp}.json`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      try { localStorage.setItem(BACKUP.LAST_KEY, backup.exportedAt); } catch {}
+      return backup.exportedAt;
+    };
+    const summarizeBackupData = (values) => {
+      const w = values[BACKUP.KEYS.weights], l = values[BACKUP.KEYS.logs];
+      return {
+        weights: Array.isArray(w) ? w.length : 0,
+        weeks: Array.isArray(l) ? l.filter(x => x && Array.isArray(x.entries) && x.entries.length > 0).length : 0
+      };
+    };
+    const parseBackup = (text) => {
+      const fail = (error) => ({ ok: false, error });
+      let env;
+      try { env = JSON.parse(text); } catch { return fail("That file isn't valid JSON."); }
+      if (!env || env.app !== BACKUP.APP || !env.data || typeof env.data !== 'object' || Array.isArray(env.data)) return fail("That doesn't look like a Fitness Tracker backup file.");
+      if (!Number.isInteger(env.format) || env.format > BACKUP.FORMAT) return fail('This backup was made by a newer version of the app and cannot be read.');
+      const entries = {};
+      Object.entries(env.data).forEach(([k, cell]) => {
+        if (!isBackupKey(k) || !cell || typeof cell !== 'object') return;
+        if ('json' in cell) entries[k] = { json: cell.json };
+        else if (typeof cell.raw === 'string') entries[k] = { raw: cell.raw };
+      });
+      if (Object.keys(entries).length === 0) return fail('This backup file contains no data.');
+      let dropped = 0;
+      const W = entries[BACKUP.KEYS.weights];
+      if (W) {
+        if (!Array.isArray(W.json)) return fail('The weight data in this backup is damaged.');
+        const clean = [];
+        W.json.forEach((e, i) => {
+          const ok = e && typeof e.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(e.date)
+            && (typeof e.weight === 'number' || (typeof e.weight === 'string' && e.weight.trim() !== ''))
+            && Number.isFinite(Number(e.weight)) && Number(e.weight) > 0;
+          if (ok) clean.push({ ...e, id: e.id || `restored-${i}`, weight: Number(e.weight) }); else dropped++;
+        });
+        W.json = clean;
+      }
+      const L = entries[BACKUP.KEYS.logs];
+      if (L && !(Array.isArray(L.json) && L.json.every(x => x && typeof x.weekOf === 'string' && Array.isArray(x.entries)))) return fail('The workout log in this backup is damaged.');
+      const S = entries[BACKUP.KEYS.state];
+      if (S) {
+        if (!S.json || typeof S.json !== 'object' || Array.isArray(S.json)) return fail('The settings in this backup are damaged.');
+        const { weekOf, viewDate, ...rest } = S.json;   // which week you were looking at isn't data: open on the current week
+        S.json = rest;
+      }
+      const X = entries[BACKUP.KEYS.exercises];
+      if (X && !Array.isArray(X.json)) return fail('The exercise list in this backup is damaged.');
+      const values = {};
+      Object.entries(entries).forEach(([k, c]) => { values[k] = 'json' in c ? c.json : c.raw; });
+      return { ok: true, entries, exportedAt: typeof env.exportedAt === 'string' ? env.exportedAt : null, summary: summarizeBackupData(values), dropped };
+    };
+    const applyBackup = (entries) => {
+      const snapshot = {};
+      Object.keys(localStorage).filter(isBackupKey).forEach(k => { snapshot[k] = localStorage.getItem(k); });
+      try {
+        Object.keys(snapshot).forEach(k => localStorage.removeItem(k));
+        Object.entries(entries).forEach(([k, c]) => localStorage.setItem(k, 'json' in c ? JSON.stringify(c.json) : c.raw));
+        return { ok: true };
+      } catch (e) {
+        try {   // put the old data back
+          Object.keys(localStorage).filter(isBackupKey).forEach(k => localStorage.removeItem(k));
+          Object.entries(snapshot).forEach(([k, v]) => localStorage.setItem(k, v));
+        } catch {}
+        return { ok: false, error: 'Could not write the restored data (browser storage is full or blocked). Your existing data was kept.' };
+      }
+    };
+
+    // Reads a JSON value from localStorage. If it exists but can't be read (or has the wrong shape), a copy is kept under
+    // "<key>:corrupt-<time>" before the app's own default is used, so the persist effects can't silently destroy it.
+    const readStored = (key, isValid, fallback) => {
+      let raw = null;
+      try { raw = localStorage.getItem(key); } catch { return fallback; }
+      if (raw === null) return fallback;
+      try { const v = JSON.parse(raw); if (isValid(v)) return v; } catch {}
+      try { localStorage.setItem(`${key}:corrupt-${Date.now()}`, raw); } catch {}
+      console.error('Saved data under ' + key + ' was unreadable; a copy was kept.');
+      return fallback;
+    };
+
+    const App = () => {
+      /* Defaults (used to seed editable exercises) */
+      const DEFAULT_TARGETS = { pull: 12, push: 12, vertical: 9, legs: 12, core: 9 };
+      const DEFAULT_NAMES   = {
+        pull:'Pull-ups / KB Row',
+        push:'Dips / Hard Push-ups',
+        vertical:'Vertical Push (Pike / OHP)',
+        legs:'Legs (Goblet OR Assisted Pistols)',
+        core:'Hanging Leg Raises'
+      };
+      const ICONS = { pull:'💪', push:'🤲', vertical:'⬆️', legs:'🦵', core:'💎', swings:'🔥', default:'🏋️' };
+
+      const CONSTANTS = {
+        STORAGE_KEY: 'patrick-minimal-v12',
+        LOG_STORAGE_KEY: 'patrick-minimal-v12:log',
+        THEME_STORAGE_KEY: 'patrick-theme',
+        EXERCISES_KEY: 'patrick-minimal-v12:exercises',
+        LOGO_STYLES: ['soft','solid','outline','duotone'],
+        LOGO_GLYPHS: ['trend','ring'],
+        // Key for persisting weight tracker entries
+        WEIGHTS_KEY: 'patrick-minimal-v12:weights',
+        // Key for remembering the weight chart view (daily / weekly)
+        WEIGHT_VIEW_KEY: 'patrick-minimal-v12:weight-view',
+      };
+
+      /* State */
+      const [activeTab, setActiveTab] = useState('dashboard');
+      const [state, setState] = useState({
+        weekOf: '', frequency: '3x', notes: '', hingePhase: 1, showSwings: false, theme: 'system', viewDate: '', logoGlyph:'trend', logoStyle:'soft',
+        exercises: null, // [{key, name, target}]
+      });
+      const [logs, setLogs] = useState(() => readStored(CONSTANTS.LOG_STORAGE_KEY, Array.isArray, []));
+      const [openHinge, setOpenHinge] = useState(false);
+
+      // Weight tracker entries
+      const [weights, setWeights] = useState(() => readStored(CONSTANTS.WEIGHTS_KEY, Array.isArray, []));
+
+      // Backup & restore dialog
+      const [backupOpen, setBackupOpen] = useState(false);
+      const [backupMsg, setBackupMsg] = useState(null);   // { kind: 'ok' | 'error', text }
+      const [lastBackup, setLastBackup] = useState(() => { try { return localStorage.getItem(BACKUP.LAST_KEY); } catch { return null; } });
+      const backupFileRef = useRef(null);
+      const trainingWeeks = logs.filter(w => w && w.entries && w.entries.length > 0).length;
+      const backupAgeDays = (() => { const t = lastBackup ? new Date(lastBackup).getTime() : NaN; return Number.isFinite(t) ? Math.max(0, Math.floor((Date.now() - t) / 86400000)) : null; })();
+      // Nudge (dot on the header button) once there is data and no backup in the last 30 days.
+      const backupDue = (weights.length > 0 || trainingWeeks > 0) && (backupAgeDays === null || backupAgeDays >= 30);
+      const openBackup = () => { setBackupMsg(null); setBackupOpen(true); };
+      useEffect(() => {
+        if (!backupOpen) return;
+        const onKey = (e) => { if (e.key === 'Escape') setBackupOpen(false); };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+      }, [backupOpen]);
+      const handleExportBackup = () => {
+        try {
+          setLastBackup(downloadBackup());
+          setBackupMsg({ kind: 'ok', text: 'Backup downloaded. Keep the file somewhere outside this browser, e.g. a cloud drive or USB stick.' });
+        } catch (e) {
+          setBackupMsg({ kind: 'error', text: 'Could not create the backup: ' + e.message });
+        }
+      };
+      const handleRestoreFile = async (e) => {
+        const file = e.target.files && e.target.files[0];
+        e.target.value = '';   // lets you pick the same file again later
+        if (!file) return;
+        if (file.size > BACKUP.MAX_BYTES) { setBackupMsg({ kind: 'error', text: 'That file is too large to be a backup.' }); return; }
+        let text;
+        try { text = await file.text(); } catch { setBackupMsg({ kind: 'error', text: 'Could not read that file.' }); return; }
+        const res = parseBackup(text);
+        if (!res.ok) { setBackupMsg({ kind: 'error', text: res.error }); return; }
+        const when = res.exportedAt && !Number.isNaN(new Date(res.exportedAt).getTime())
+          ? new Date(res.exportedAt).toLocaleString(navigator.language, { dateStyle: 'medium', timeStyle: 'short' }) : 'an unknown date';
+        const lines = [
+          `Restore the backup from ${when}?`, '',
+          `In the backup:  ${res.summary.weights} weight entries, ${res.summary.weeks} training weeks`,
+          `In the app now: ${weights.length} weight entries, ${trainingWeeks} training weeks`, '',
+          'This REPLACES everything currently in the app and cannot be undone.'
+        ];
+        if (res.dropped) lines.push('', `${res.dropped} invalid weight ${res.dropped === 1 ? 'entry' : 'entries'} in the file will be skipped.`);
+        if (!window.confirm(lines.join('\n'))) return;
+        const done = applyBackup(res.entries);
+        if (!done.ok) { setBackupMsg({ kind: 'error', text: done.error }); return; }
+        window.location.reload();
+      };
+      // Rest timer state lives inside the RestTimerCard component so that updates to the
+      // countdown do not re‑render the entire App.  Keeping the timer state scoped
+      // locally prevents the countdown interval from stealing focus from other inputs.
+
+      /* Date helpers */
+      const toISO=(d)=>{const y=d.getFullYear();const m=String(d.getMonth()+1).padStart(2,'0');const day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`};
+      const isoToday=()=>toISO(new Date());
+      const addDays=(iso,delta)=>{const d=new Date(iso||isoToday());d.setDate(d.getDate()+delta);d.setHours(0,0,0,0);return toISO(d)};
+      const startOfISOWeek=(dateStr)=>{const d=dateStr?new Date(dateStr):new Date();const day=d.getDay();const diff=(day===0?-6:1)-day;d.setDate(d.getDate()+diff);d.setHours(0,0,0,0);return toISO(d)};
+      const getWeekDays=(weekStartISO)=>{const labels=['M','T','W','T','F','S','S'];return Array.from({length:7},(_,i)=>{const iso=addDays(weekStartISO,i);return{label:labels[i],date:iso,isToday:iso===isoToday()}})};
+      const weekEnd=(weekStartISO)=> addDays(weekStartISO,6);
+      const clampToWeek=(isoDate, weekStartISO)=>{ const start=weekStartISO; const end=weekEnd(weekStartISO); if(isoDate<start) return start; if(isoDate>end) return end; return isoDate; };
+      const formatDisplayDate=(isoDate)=>{const d=new Date(isoDate);const userTimezoneOffset=d.getTimezoneOffset()*60000;const adjustedDate=new Date(d.getTime()+userTimezoneOffset);return adjustedDate.toLocaleDateString(navigator.language,{weekday:'short',day:'numeric',month:'short'})};
+
+      /* Persistence */
+      useEffect(()=>{
+        try{
+          const s = localStorage.getItem(CONSTANTS.STORAGE_KEY); if(s) setState(p=>({...p,...JSON.parse(s)}));
+          
+          const t = localStorage.getItem(CONSTANTS.THEME_STORAGE_KEY); if(t) setState(p=>({...p,theme:t}));
+        }catch(e){console.error("Failed to load state from localStorage", e)}
+      },[]);
+
+      // Init week/view + exercises list (seed from defaults if missing)
+      useEffect(()=>{
+        setState(p=>{
+          const weekOf = startOfISOWeek(p.weekOf||isoToday());
+          const viewDate = p.viewDate||isoToday();
+          let exercises = p.exercises;
+          if(!exercises){
+            let saved = null;
+            try{ saved = localStorage.getItem(CONSTANTS.EXERCISES_KEY); }catch(e){ console.error('Failed to read exercises from localStorage', e); }
+            let parsed = null;
+            if(saved){
+              try{ parsed = JSON.parse(saved); }catch(e){ console.error('Corrupted exercises data in localStorage, resetting to defaults', e); }
+            }
+            if(parsed){ exercises = parsed; }
+            else{
+              exercises = Object.keys(DEFAULT_TARGETS).map(k=>({key:k, name:DEFAULT_NAMES[k], target:DEFAULT_TARGETS[k]}));
+            }
+          }
+          return {...p, weekOf, viewDate, exercises};
+        });
+      },[]);
+
+      useEffect(()=>{ try{localStorage.setItem(CONSTANTS.STORAGE_KEY, JSON.stringify(state));}catch{} },[state]);
+      useEffect(()=>{ try{localStorage.setItem(CONSTANTS.LOG_STORAGE_KEY, JSON.stringify(logs));}catch{} },[logs]);
+      useEffect(()=>{ try{ if(state.exercises) localStorage.setItem(CONSTANTS.EXERCISES_KEY, JSON.stringify(state.exercises)); }catch{} },[state.exercises]);
+
+      // Persist weights whenever they change
+      useEffect(() => {
+        try { localStorage.setItem(CONSTANTS.WEIGHTS_KEY, JSON.stringify(weights)); } catch {
+          /* ignore */
+        }
+      }, [weights]);
+
+      /* Logic effects */
+      useEffect(()=>{
+        if(!state.weekOf || !state.viewDate) return;
+      
+        const selectedWeekStart = startOfISOWeek(state.weekOf);
+        const currentWeekStart = startOfISOWeek(isoToday());
+      
+        let newViewDate;
+      
+        if (selectedWeekStart === currentWeekStart) {
+          // If viewing the current week, automatically select today's date.
+          newViewDate = isoToday();
+        } else {
+          // For other weeks, try to preserve the day of the week.
+          // This prevents jumping to the start/end of the week when navigating.
+          const oldViewDate = new Date(state.viewDate);
+          // Adjust for timezone to get the correct day index relative to UTC
+          const oldViewDateUTC = new Date(oldViewDate.valueOf() + oldViewDate.getTimezoneOffset() * 60000);
+          const dayOfWeek = oldViewDateUTC.getUTCDay(); // 0=Sunday, 1=Monday
+          const dayIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // 0=Monday, ... 6=Sunday
+          newViewDate = addDays(selectedWeekStart, dayIndex);
+        }
+      
+        // Only update state if the viewDate needs to change to avoid unnecessary re-renders.
+        if (newViewDate !== state.viewDate) {
+          setState(p => ({ ...p, viewDate: newViewDate }));
+        }
+      }, [state.weekOf]);
+      useEffect(()=>{ if(!state.weekOf) return; const ws=startOfISOWeek(state.weekOf); if(!logs.find(w=>w.weekOf===ws)){ setLogs(prev=>[...prev,{weekOf:ws,deload:false,entries:[]}]); } }, [state.weekOf]);
+      useEffect(()=>{
+        const applyTheme=(theme)=>{const prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark=theme==='dark'||(theme==='system'&&prefersDark);document.documentElement.classList.toggle('dark', isDark)};
+        applyTheme(state.theme); try{ localStorage.setItem(CONSTANTS.THEME_STORAGE_KEY,state.theme); }catch(e){ console.error('Failed to persist theme', e); }
+      },[state.theme]);
+
+      /* Helpers & mutations */
+      const getWeek=(weekOf,create=true)=>{let w=logs.find(x=>x.weekOf===weekOf); if(!w && create){w={weekOf, deload:false, entries:[]}; setLogs(p=>[...p,w]);} return w};
+      const weekSetCounts=(week)=>{
+        const counts = Object.fromEntries((state.exercises||[]).map(e=>[e.key,0]));
+        if(!week) return counts;
+        week.entries.forEach(e=>{ if(e.type==='set' && (e.ex in counts)){ counts[e.ex]+=1; }});
+        return counts;
+      };
+      const overallProgress=(week)=>{
+        const counts=weekSetCounts(week);
+        const totalTarget=(state.exercises||[]).reduce((a,b)=>a+(Number(b.target)||0),0);
+        const totalCurrent=(state.exercises||[]).reduce((a,e)=>a+(counts[e.key]||0),0);
+        return totalTarget>0? Math.round((totalCurrent/totalTarget)*100) : 0;
+      };
+      const addSet=(exercise,delta)=>{
+        const wk=startOfISOWeek(state.weekOf||isoToday());
+        if (delta > 0) {
+          const newEntry={id:(Date.now()+Math.random()).toString(36), date: isoToday(), ex:exercise, reps:0, type:'set'};
+          setLogs(prev => {
+            const idx = prev.findIndex(w => w.weekOf === wk);
+            if (idx === -1) return [...prev, { weekOf: wk, deload: false, entries: [newEntry] }];
+            const copy = [...prev]; copy[idx] = { ...copy[idx], entries: [...copy[idx].entries, newEntry] }; return copy;
+          });
+        } else {
+          setLogs(prev=>prev.map(w=>{
+            if(w.weekOf!==wk) return w;
+            const idx=[...w.entries].map((e,i)=>({e,i})).reverse().find(x=>x.e.type==='set' && x.e.ex===exercise)?.i;
+            if(idx===undefined) return w; const copy=[...w.entries]; copy.splice(idx,1); return {...w, entries:copy};
+          }));
+        }
+      };
+      const addReps=(exercise,reps)=>{
+        const wk=startOfISOWeek(state.weekOf||isoToday());
+        if(!reps || reps <= 0) return;
+        const newEntry={id:(Date.now()+Math.random()).toString(36), date:state.viewDate||isoToday(), ex:exercise, reps, type:'reps'};
+        setLogs(prev => {
+          const idx = prev.findIndex(w => w.weekOf === wk);
+          if (idx === -1) return [...prev, { weekOf: wk, deload: false, entries: [newEntry] }];
+          const copy = [...prev]; copy[idx] = { ...copy[idx], entries: [...copy[idx].entries, newEntry] }; return copy;
+        });
+      };
+      const deleteEntry=(id)=>{ setLogs(prev=>prev.map(w=>({...w, entries:w.entries.filter(e=>e.id!==id)}))); };
+      const getDayEntries=()=>{ const day=state.viewDate||isoToday(); const wk=startOfISOWeek(state.weekOf||isoToday()); const week=getWeek(wk,false); if(!week) return []; return week.entries.filter(e=>e.type!=='set' && e.date===day).slice().reverse(); };
+      const nameFor = (key)=> (state.exercises?.find(x=>x.key===key)?.name) || key;
+      const iconFor = (key)=> ICONS[key] || ICONS.default;
+      const addExerciseRow = ()=>{
+        const id = `ex_${Date.now().toString(36)}`;
+        setState(p=>({...p, exercises:[...(p.exercises||[]), {key:id, name:'New exercise', target:10}]}));
+      };
+      const updateExercise = (key, updates)=>{
+        setState(p=>({...p, exercises:(p.exercises||[]).map(e=> e.key===key ? {...e, ...updates, target: Math.max(0, Number(updates.target ?? e.target)||0)} : e )}));
+      };
+      const removeExercise = (key)=>{
+        if(!confirm('Remove this exercise row? Logged history is kept intact.')) return;
+        setState(p=>({...p, exercises:(p.exercises||[]).filter(e=>e.key!==key)}));
+      }
+
+      // === Additional cards ===
+      // Weight Tracker Card: allows logging and summarizing body weight over time (dashboard)
+      const WeightTrackerCard = () => {
+        // local state for weight logging inputs
+        const [weightDate, setWeightDate] = useState(isoToday());
+        const [weightValue, setWeightValue] = useState('');
+        const handleAdd = () => {
+          if (!weightValue) return;
+          // addWeightEntry returns false when the value was rejected or the user cancelled a prompt;
+          // keep what they typed in that case so they can correct it.
+          if (addWeightEntry(weightDate, Number(weightValue))) setWeightValue('');
+        };
+        return (
+          <Card className="p-6 space-y-4 w-full h-full">
+            <div className="card-headline">
+              <div className="title">
+                <span className="text-xl">⚖️</span>
+                <h3 className="text-lg font-semibold">Weight Entry</h3>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              {/* using our Input component ensures consistent styling across themes */}
+              {/* Use a native input element here so we have full control over styling. The `input` class
+                  provides consistent styling across themes, while `px-3` gives horizontal padding.
+                  Override the background to use `--input` instead of the default `--input-background`. */}
+              <input
+                type="date"
+                className="input h-9 w-36"
+                value={weightDate}
+                onChange={e => setWeightDate(e.target.value)}
+                /* Always display this field using the light theme colours. We set a light background and dark text,
+                   and add horizontal padding for legibility. */
+                style={{
+                  background: '#f8fafc',
+                  color: '#1a1a1a',
+                  paddingLeft: '0.75rem',
+                  paddingRight: '0.75rem'
+                }}
+              />
+              {/* Use a native number input for the weight field to ensure padding is applied properly. */}
+              <input
+                type="number"
+                placeholder="Weight"
+                className="input h-9 w-24"
+                value={weightValue}
+                onChange={e => setWeightValue(e.target.value)}
+                /* Always show this field in light mode colours. Set a light background, dark text and horizontal padding. */
+                style={{
+                  background: '#f8fafc',
+                  color: '#1a1a1a',
+                  paddingLeft: '0.75rem',
+                  paddingRight: '0.75rem'
+                }}
+              />
+              <Button size="sm" onClick={handleAdd}>Add</Button>
+            </div>
+            <div className="text-xs" style={{color:'var(--muted-foreground)'}}>
+              View your weight trend on the Progress tab.
+            </div>
+          </Card>
+        );
+      };
+
+      /* The RestTimerCard is now defined at the module scope (outside of App) and
+         memoized there.  See above for its implementation. */
+
+      // Weight tracker helpers
+      // Add a new weight entry with an ISO date string and numeric weight (kg). Generates a unique id.
+      // Rules for weight entries: one entry per date, plausible values only.
+      const WEIGHT_MIN_KG = 30, WEIGHT_MAX_KG = 300;   // outside this range the value is rejected
+      const WEIGHT_JUMP_KG = 4, WEIGHT_JUMP_DAYS = 7;  // a bigger change than this vs the nearest entry asks for confirmation
+      // Returns { ok:false } when the entry must not be saved (invalid value, or the user declined a prompt).
+      // Otherwise { ok:true, removeIds } where removeIds are the other entries on the same date that it replaces.
+      const resolveWeightEntry = (date, weight, ignoreId = null) => {
+        if (!date || !Number.isFinite(weight)) return { ok: false };
+        if (weight < WEIGHT_MIN_KG || weight > WEIGHT_MAX_KG) {
+          window.alert(`${weight} kg doesn't look right. Please enter a weight between ${WEIGHT_MIN_KG} and ${WEIGHT_MAX_KG} kg.`);
+          return { ok: false };
+        }
+        const others = weights.filter(e => e.id !== ignoreId);
+        const sameDay = others.filter(e => e.date === date);
+        if (sameDay.length) {
+          const old = sameDay.map(e => `${e.weight} kg`).join(', ');
+          if (!window.confirm(`You already have ${old} logged for ${date}. Replace it with ${weight} kg?`)) return { ok: false };
+        }
+        // Typo guard: compare with the closest entry on another date.
+        const t = new Date(date).getTime();
+        let nearest = null, best = Infinity;
+        others.forEach(e => {
+          if (e.date === date) return;
+          const d = Math.abs(new Date(e.date).getTime() - t);
+          if (d < best) { best = d; nearest = e; }
+        });
+        if (nearest && best <= WEIGHT_JUMP_DAYS * 86400000 && Math.abs(weight - nearest.weight) > WEIGHT_JUMP_KG) {
+          const diff = Math.abs(weight - nearest.weight).toFixed(1);
+          if (!window.confirm(`${weight} kg is ${diff} kg ${weight > nearest.weight ? 'above' : 'below'} your entry from ${nearest.date} (${nearest.weight} kg). Save anyway?`)) return { ok: false };
+        }
+        return { ok: true, removeIds: sameDay.map(e => e.id) };
+      };
+      const addWeightEntry = (date, weight) => {
+        const w = Number(weight);
+        const res = resolveWeightEntry(date, w);
+        if (!res.ok) return false;
+        const newEntry = { id: (Date.now() + Math.random()).toString(36), date, weight: w };
+        setWeights(prev => [...prev.filter(e => !res.removeIds.includes(e.id)), newEntry]);
+        return true;
+      };
+      // Remove a weight entry by id
+      const deleteWeightEntry = (id) => {
+        setWeights(prev => prev.filter(e => e.id !== id));
+      };
+
+      /* Header (unchanged) */
+      const AppHeader = ({ activeTab, setActiveTab, onOpenBackup, backupDue }) => {
+        const handleLogoClick = (e) => {
+          e.preventDefault();
+          setState(p => {
+            const currentIndex = CONSTANTS.LOGO_STYLES.indexOf(p.logoStyle);
+            const nextIndex = (currentIndex + 1) % CONSTANTS.LOGO_STYLES.length;
+            return { ...p, logoStyle: CONSTANTS.LOGO_STYLES[nextIndex] };
+          });
+        };
+        const handleLogoContextMenu = (e) => {
+          e.preventDefault();
+          setState(p => {
+            const currentIndex = CONSTANTS.LOGO_GLYPHS.indexOf(p.logoGlyph);
+            const nextIndex = (currentIndex + 1) % CONSTANTS.LOGO_GLYPHS.length;
+            return { ...p, logoGlyph: CONSTANTS.LOGO_GLYPHS[nextIndex] };
+          });
+        };
+        return (
+          <header className="sticky top-0 z-50 border-b glass-header" style={{borderColor:'var(--border)'}}>
+            <div className="max-w-[96rem] mx-auto px-4 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <button className={`app-logo ${state.logoStyle}`} title="Left-click: change style. Right-click: change icon." onClick={handleLogoClick} onContextMenu={handleLogoContextMenu}>
+                    {state.logoGlyph==='ring' ? <LogoRing/> : <LogoTrend/>}
+                </button>
+                <div>
+                  <h1 className="text-base font-semibold" style={{background:'linear-gradient(135deg, var(--foreground) 0%, color-mix(in srgb, var(--foreground) 70%, transparent) 100%)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent'}}>Fitness Tracker</h1>
+                  <p className="text-xs" style={{color:'var(--muted-foreground)'}}>Minimal Full-Body Home Plan</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="tabs-list">
+                  <button className={`tab-trigger ${activeTab==='dashboard'?'active':''}`} onClick={()=>setActiveTab('dashboard')}><Target className="icon-primary" size={16}/><span className="ml-2">Dashboard</span></button>
+                  <button className={`tab-trigger ${activeTab==='progress'?'active':''}`} onClick={()=>setActiveTab('progress')}><TrendingUp className="icon-primary" size={16}/><span className="ml-2">Progress</span></button>
+                </div>
+                <Button variant="ghost" size="sm" onClick={()=>setState(p=>({...p, theme: document.documentElement.classList.contains('dark')?'light':'dark'}))}>
+                  {document.documentElement.classList.contains('dark') ? <Sun className="icon-primary"/> : <Moon className="icon-primary"/>}
+                </Button>
+                <span className="relative inline-flex">
+                  <Button variant="ghost" size="sm" aria-label="Backup and restore" title={backupDue ? 'Backup & restore (no backup in the last 30 days)' : 'Backup & restore'} onClick={onOpenBackup}>
+                    <Download/>
+                  </Button>
+                  {backupDue && <span style={{position:'absolute', top:3, right:3, width:9, height:9, borderRadius:9999, background:'#d97706', boxShadow:'0 0 0 2px var(--background)'}}/>}
+                </span>
+              </div>
+            </div>
+          </header>
+        );
+      };
+
+      /* Inline row editor */
+      const ExerciseRow = ({ ex, counts, onInc, onDec, onSave, onRemove })=>{
+        const [editing, setEditing] = useState(false);
+        const [name, setName] = useState(ex.name);
+        const [target, setTarget] = useState(String(ex.target));
+        const pct = ex.target>0 ? Math.round(((counts[ex.key]||0)/ex.target)*100) : 0;
+        const save = ()=>{
+          onSave(ex.key, {name: name.trim() || 'Unnamed', target: Number(target)||0});
+          setEditing(false);
+        };
+        return (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-xl">{iconFor(ex.key)}</span>
+                {!editing ? (
+                  <div>
+                    <div className="font-medium text-sm flex items-center gap-2">
+                      <span>{ex.name}</span>
+                      <button title="Edit name & target" className="btn-outline h-6 px-2 rounded text-xs" onClick={()=>setEditing(true)}>✏️ Edit</button>
+                    </div>
+                    <div className="text-xs" style={{color:'var(--muted-foreground)'}}>{counts[ex.key]||0} / {ex.target} sets completed</div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      {/* Style edit fields with light background and dark text to match other inputs */}
+                      <Input
+                        className="input h-8 w-full sm:w-72"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        placeholder="Exercise name"
+                        /* Force light mode styling for edit fields: white background, dark text, and horizontal padding */
+                        style={{ background: '#f8fafc', color: '#1a1a1a', paddingLeft: '0.75rem', paddingRight: '0.75rem' }}
+                      />
+                      <Input
+                        className="input h-8 w-14 text-center"
+                        value={target}
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        onChange={e => /^[0-9]*$/.test(e.target.value) && setTarget(e.target.value)}
+                        placeholder="Target sets"
+                        /* Force light mode styling for edit fields: white background and dark text, with padding for readability */
+                        style={{
+                          background: '#f8fafc',
+                          color: '#1a1a1a',
+                          paddingLeft: '0.75rem',
+                          paddingRight: '0.75rem'
+                        }}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button size="sm" onClick={save}>Save</Button>
+                      <Button size="sm" variant="outline" onClick={()=>{setEditing(false); setName(ex.name); setTarget(String(ex.target));}}>Cancel</Button>
+                      <Button size="sm" variant="danger" onClick={()=>onRemove(ex.key)} title="Remove row">Remove</Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <span className="percent-chip">{pct}%</span>
+            </div>
+
+            <Progress value={pct}/>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                <Button size="sm" variant="outline" className="h-9 w-9 p-0" onClick={()=>onDec(ex.key)}><Minus/></Button>
+                <Button size="sm" variant="outline" className="h-9 w-9 p-0" onClick={()=>onInc(ex.key)}><Plus/></Button>
+              </div>
+              <RepInput exercise={ex.key} onAddReps={addReps} />
+            </div>
+          </div>
+        );
+      };
+
+      /* Weekly Targets (now dynamic + add row button) */
+      const WeeklyTargetsCard = ()=>{
+        const wk = getWeek(state.weekOf||startOfISOWeek(isoToday()), false);
+        const counts = weekSetCounts(wk);
+        const exercises = state.exercises || [];
+
+        return (
+          <Card className="p-6 space-y-6">
+            <div className="card-headline">
+              <div className="title">
+                <Target className="icon-primary"/>
+                <h2 className="text-lg font-semibold">Weekly Targets</h2>
+              </div>
+              <div className="actions">
+                <div className="text-right">
+                  <div className="text-2xl font-bold icon-success">{overallProgress(wk)}%</div>
+                  <div className="text-xs" style={{color:'var(--muted-foreground)'}}>Overall Progress</div>
+                </div>
+              </div>
+            </div>
+
+            {exercises.map(ex=>(
+              <ExerciseRow
+                key={ex.key}
+                ex={ex}
+                counts={counts}
+                onInc={(k)=>addSet(k,1)}
+                onDec={(k)=>addSet(k,-1)}
+                onSave={updateExercise}
+                onRemove={removeExercise}
+              />
+            ))}
+
+            <div className="flex items-center justify-end pt-2">
+              <Button variant="outline" size="sm" onClick={addExerciseRow}><Plus/><span className="ml-2">Add exercise</span></Button>
+            </div>
+
+            <div className="pt-4 border-t" style={{borderColor:'var(--border)'}}>
+              <button className="collapse-btn" onClick={()=>setOpenHinge(v=>!v)}>
+                <div className="flex items-center gap-2"><span>🦴</span><span className="font-medium">Hinge Ladder</span></div>
+                <span className="text-sm flex items-center gap-2" style={{color:'var(--muted-foreground)'}}>{openHinge? 'Hide':'Show'} <Caret dir={openHinge?'up':'down'}/></span>
+              </button>
+              {openHinge && (
+                <div className="mt-4 p-4 rounded-lg" style={{background:'var(--muted)'}}>
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    {[1,2,3].map(phase=> (<Button key={phase} size="sm" variant={state.hingePhase===phase? 'primary':'outline'} onClick={()=>setState(p=>({...p,hingePhase:phase}))}>Phase {phase}</Button>))}
+                  </div>
+                  {state.hingePhase===1 && (<ul className="space-y-2 text-xs" style={{color:'var(--muted-foreground)'}}><li>• Dowel hinge 2×8/day</li><li>• KB Deadlift (sumo) 16 kg • 4×8–12</li><li>• Cues: ribs down • 360° brace • lats • shins vertical • hips back • neutral neck</li></ul>)}
+                  {state.hingePhase===2 && (<ul className="space-y-2 text-xs" style={{color:'var(--muted-foreground)'}}><li>• KB RDL 16 kg • 4×8–12 • 3 s down</li><li>• Cues: soft knees • hinge till hamstrings loaded • bell close • tall lockout</li></ul>)}
+                  {state.hingePhase===3 && (
+                    <div>
+                      <ul className="space-y-2 text-xs mb-4" style={{color:'var(--muted-foreground)'}}>
+                        <li>• Start dead-stop swings (log reps, e.g., 8×5=40)</li>
+                        <li>• Then power 5×10 or EMOM 10×10</li>
+                      </ul>
+                      <div className="rounded-lg border p-3 flex items-center justify-between" style={{borderColor:'var(--border)'}}>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{ICONS.swings}</span>
+                          <div>
+                            <div className="text-sm font-medium">KB Swings</div>
+                            <div className="text-xs" style={{color:'var(--muted-foreground)'}}>No set target — log total reps</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs" style={{color:'var(--muted-foreground)'}}>Active</span>
+                            <Switch checked={state.showSwings} onChange={(checked)=>setState(p=>({...p, showSwings:checked}))}/>
+                          </div>
+                          {state.showSwings && <RepInput exercise="swings" onAddReps={addReps} variant="warning" />}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="flex items-center justify-between pt-4"><div className="text-xs" style={{color:'var(--muted-foreground)'}}><strong>Rest periods:</strong> Big 2.5–3.5 min • Others 2–3 min • Core 90–120 s</div></div>
+          </Card>
+        );
+      };
+
+      /* Rep input */
+      const RepInput = ({ exercise, onAddReps, variant = "primary" }) => {
+        const [reps, setReps] = useState('');
+        const inputRef = useRef(null);
+        const handleAddClick = () => {
+          const repCount = parseInt(reps, 10);
+          if (repCount > 0) {
+            onAddReps(exercise, repCount);
+            setReps('');
+            inputRef.current?.focus({preventScroll: true});
+          }
+        };
+        return (
+          <div className="flex items-center gap-2">
+            <Input
+              ref={inputRef}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              placeholder="reps"
+              /* Apply the `input` class to inherit consistent rounded corners and styles */
+              className="input reps-input w-20 text-center h-8"
+              value={reps}
+              onChange={(e) => { if (/^[0-9]*$/.test(e.target.value)) setReps(e.target.value); }}
+              onKeyDown={(e) => e.key === 'Enter' && handleAddClick()}
+            />
+            <Button variant={variant} size="sm" className="h-8" onClick={handleAddClick}>Add</Button>
+          </div>
+        );
+      };
+
+      /* Logged Entries (uses dynamic names/icons) */
+      const LoggedEntriesCard = ()=> {
+        const weekStart = startOfISOWeek(state.weekOf || isoToday());
+        const week = getWeek(weekStart, false);
+        const days = getWeekDays(weekStart);
+        const hasEntryByDate = new Set((week?.entries || []).filter(e=>e.type!=='set').map(e => e.date));
+        const workIdx = state.frequency === '6x' ? new Set([0,1,2,3,4,5]) : new Set([0,2,4]);
+        const freqLabel = state.frequency==='6x'?'6×/week':'3×/week';
+        return (
+          <Card className="p-6">
+            <div className="card-headline">
+              <div className="title">
+                <Calendar className="icon-success"/>
+                <h3 className="text-lg font-semibold">Logged Entries</h3>
+              </div>
+              <div className="actions">
+                <span className="text-xs" style={{color:'var(--muted-foreground)'}}>{freqLabel} • Training days highlighted</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs" style={{color:'var(--muted-foreground)'}}>Deload</span>
+                  <Switch checked={!!week?.deload} onChange={(checked)=>setLogs(prev=>prev.map(w=> w.weekOf===weekStart ? {...w, deload: checked} : w))}/>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 mb-3">
+              <div className="md:col-span-4">
+                <div className="field-label">Week of</div>
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" size="sm" aria-label="Previous week" onClick={()=> setState(p=>({...p, weekOf: startOfISOWeek(addDays(p.weekOf||isoToday(), -7))}))}>‹</Button>
+                  <div className="relative">
+                    <span className="absolute left-2 top-1/2 -translate-y-1/2"><Calendar size={16} className="icon-primary"/></span>
+                    {/* Use light background and dark text for the week selector date input to match other inputs */}
+                    <Input
+                      type="date"
+                      className="input h-9 pl-8"
+                      value={state.weekOf || weekStart}
+                      onChange={(e) =>
+                        setState((p) => ({ ...p, weekOf: startOfISOWeek(e.target.value || isoToday()) }))
+                      }
+                      /* Force light background and dark text even in dark mode */
+                      style={{ background: '#f8fafc', color: '#1a1a1a' }}
+                    />
+                  </div>
+                  <Button variant="ghost" size="sm" aria-label="Next week" onClick={()=> setState(p=>({...p, weekOf: startOfISOWeek(addDays(p.weekOf||isoToday(), 7))}))}>›</Button>
+                </div>
+              </div>
+              <div className="md:col-span-4">
+                <div className="field-label">Frequency</div>
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant={state.frequency==='3x' ? 'primary' : 'outline'} className="h-8 px-3" onClick={() => setState(prev => ({ ...prev, frequency: '3x' }))}>3×</Button>
+                  <Button size="sm" variant={state.frequency==='6x' ? 'primary' : 'outline'} className="h-8 px-3" onClick={() => setState(prev => ({ ...prev, frequency: '6x' }))}>6×</Button>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              {days.map((d, idx) => {
+                const isActive = (state.viewDate || isoToday()) === d.date;
+                const cls = ['day-pill', workIdx.has(idx) ? 'train' : 'rest', isActive ? 'active' : ''].join(' ').trim();
+                const names=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+                return (
+                  <button type="button" key={d.date} className={cls} onClick={() => setState(prev => ({ ...prev, viewDate: d.date }))} title={d.date} aria-pressed={isActive}>
+                    <span>{names[idx]}</span>
+                    {hasEntryByDate.has(d.date) && <span className="dot" />}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="space-y-3">
+              {(() => {
+                const entries = getDayEntries();
+                if(entries.length===0){
+                  return <div className="text-center py-8"><div className="text-4xl mb-2">💪</div><p style={{color:'var(--muted-foreground)'}}>No entries for this day</p><p className="text-xs" style={{color:'var(--muted-foreground)'}}>Add reps on the left to log your workout.</p></div>;
+                }
+                return entries.map(entry => (
+                  <div key={entry.id} className="flex items-center justify-between p-4 rounded-lg border hover-lift" style={{background:'var(--card)', borderColor:'var(--border)'}}>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">{iconFor(entry.ex)}</span>
+                      <div>
+                        <div className="font-medium text-sm">{nameFor(entry.ex)}</div>
+                        <div className="text-xs" style={{color:'var(--muted-foreground)'}}>{entry.date}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="badge">{entry.reps} reps</span>
+                      <IconBtn title="Delete" onClick={()=>deleteEntry(entry.id)}><Trash/></IconBtn>
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+          </Card>
+        );
+      };
+
+      // ─── Progress tab helpers (shared by all three progress cards) ────────────
+      const progressMetrics = React.useMemo(()=>{
+        const base = (state.exercises||[]).map(e=>({ key: e.key, label: nameFor(e.key) }));
+        const hasSwings = state.showSwings || logs.some(w => (w.entries||[]).some(e => e.type==='reps' && e.ex==='swings'));
+        const extra = hasSwings ? [{ key:'swings', label:'Swings' }] : [];
+        return [{ key:'overall', label:'Overall (sum)' }, ...base, ...extra];
+      }, [state.exercises, state.showSwings, logs]);
+
+      const weeksHistory = ()=> logs.slice().sort((a,b)=> a.weekOf.localeCompare(b.weekOf));
+
+      const repsSummary = (week)=>{
+        const sums = {};
+        const w = logs.find(x => x.weekOf === week);
+        if(!w) return sums;
+        (w.entries||[]).forEach(e => { if(e.type==='reps'){ const k=e.ex; const v=Number(e.reps)||0; sums[k]=(sums[k]||0)+v; } });
+        return sums;
+      };
+
+      const chartDataForMetric = (m)=>{
+        const labels = [], data = [];
+        weeksHistory().forEach(w => {
+          labels.push(w.weekOf);
+          const sums = repsSummary(w.weekOf);
+          const val = m==='overall' ? Object.values(sums).reduce((a,b)=>a+Number(b||0),0) : Number(sums[m]||0);
+          data.push(val);
+        });
+        return { labels, data };
+      };
+
+      // ─── Weight Trend Card ───────────────────────────────────────────────────
+      const WeightChartCard = () => {
+        const weightChartRef = useRef(null);
+        const weeklyAvgRef = useRef(null);
+        const weeklyDeltaRef = useRef(null);
+        // Daily/weekly view. Persisted so it survives this card being re-mounted by App re-renders.
+        const [viewMode, setViewModeState] = useState(() => {
+          try { return localStorage.getItem(CONSTANTS.WEIGHT_VIEW_KEY) === 'weekly' ? 'weekly' : 'daily'; } catch { return 'daily'; }
+        });
+        const setViewMode = (m) => {
+          setViewModeState(m);
+          try { localStorage.setItem(CONSTANTS.WEIGHT_VIEW_KEY, m); } catch {}
+        };
+        const [showEntries, setShowEntries] = useState(false);
+        const [editingId, setEditingId] = useState(null);
+        const [editDate, setEditDate] = useState('');
+        const [editWeight, setEditWeight] = useState('');
+
+        const startEdit = (entry) => { setEditingId(entry.id); setEditDate(entry.date); setEditWeight(String(entry.weight)); };
+        const cancelEdit = () => { setEditingId(null); setEditDate(''); setEditWeight(''); };
+        const saveEdit = (id) => {
+          if (!editDate || !editWeight) return;
+          const w = Number(editWeight);
+          const res = resolveWeightEntry(editDate, w, id);
+          if (!res.ok) return;
+          setWeights(prev => prev.filter(e => !res.removeIds.includes(e.id)).map(e => e.id === id ? { ...e, date: editDate, weight: w } : e));
+          cancelEdit();
+        };
+
+        const sorted = React.useMemo(() => [...weights].sort((a,b) => a.date.localeCompare(b.date)), [weights]);
+
+        // Dates that have more than one entry (left over from before one-entry-per-day was enforced).
+        const dupDates = React.useMemo(() => {
+          const seen = new Set(), dup = new Set();
+          weights.forEach(e => { if (seen.has(e.date)) dup.add(e.date); else seen.add(e.date); });
+          return dup;
+        }, [weights]);
+
+        const statChips = React.useMemo(() => {
+          if (sorted.length === 0) return null;
+          const latest = sorted[sorted.length - 1].weight;
+          const first = sorted[0].weight;
+          const avg = sorted.reduce((s,e) => s + e.weight, 0) / sorted.length;
+          const delta = latest - first;
+          const now = new Date();
+          const last7 = sorted.filter(e => (now - new Date(e.date)) / 86400000 <= 7);
+          const avg7 = last7.length > 0 ? last7.reduce((s,e) => s + e.weight, 0) / last7.length : null;
+          return { latest, avg: avg.toFixed(1), delta, avg7: avg7 ? avg7.toFixed(1) : null };
+        }, [sorted]);
+
+        // ── Weekly view (Mon–Sun weeks, same as the rest of the app) ──────────
+        const isoToLocal = (iso) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
+        const addDaysLocal = (iso, n) => { const d = isoToLocal(iso); d.setDate(d.getDate() + n); return toISO(d); };
+        const weekStartOf = (iso) => { const d = isoToLocal(iso); d.setDate(d.getDate() + (d.getDay() === 0 ? -6 : 1) - d.getDay()); return toISO(d); };
+        const weeksBetween = (a, b) => Math.round((isoToLocal(b) - isoToLocal(a)) / (7 * 86400000));
+        const fmtShort = (iso) => isoToLocal(iso).toLocaleDateString(navigator.language, { day: 'numeric', month: 'short' });
+        const fmtDeltaNum = (v) => { const r = Number(v.toFixed(1)); return (r > 0 ? '+' : r < 0 ? '−' : '±') + Math.abs(r).toFixed(1); };
+        const fmtDelta = (v) => (v === null || v === undefined || Number.isNaN(v)) ? '—' : fmtDeltaNum(v) + ' kg';
+        // Weight going down = green, up = red (same convention as the "Total Δ" chip).
+        const deltaTone = (v) => (v === null || v === undefined || Number.isNaN(v) || Number(v.toFixed(1)) === 0) ? undefined : (v < 0 ? '#16a34a' : '#dc2626');
+
+        const weekly = React.useMemo(() => {
+          const buckets = new Map();
+          sorted.forEach(e => {
+            const w = Number(e.weight);
+            if (!Number.isFinite(w)) return;
+            const wk = weekStartOf(e.date);
+            if (!buckets.has(wk)) buckets.set(wk, []);
+            buckets.get(wk).push(w);
+          });
+          const currentWeek = weekStartOf(isoToday());
+          let prev = null;
+          return [...buckets.keys()].sort().map(wk => {
+            const vals = buckets.get(wk);
+            const row = {
+              weekOf: wk,
+              end: addDaysLocal(wk, 6),
+              avg: vals.reduce((a, b) => a + b, 0) / vals.length,
+              count: vals.length,
+              min: Math.min(...vals),
+              max: Math.max(...vals),
+              delta: null,
+              gap: 0,                       // weeks since the previous logged week (>1 = weeks without entries in between)
+              partial: wk === currentWeek   // current week is still in progress
+            };
+            if (prev) { row.delta = row.avg - prev.avg; row.gap = weeksBetween(prev.weekOf, wk); }
+            prev = row;
+            return row;
+          });
+        }, [sorted]);
+
+        // Every calendar week between the first and last logged one; weeks without entries are blank
+        // (avg: null) so the charts space weeks by the calendar, not by how many happen to have data.
+        const weeklyGrid = React.useMemo(() => {
+          if (weekly.length === 0) return [];
+          const byWeek = new Map(weekly.map(w => [w.weekOf, w]));
+          const out = [];
+          for (let wk = weekly[0].weekOf; wk <= weekly[weekly.length - 1].weekOf; wk = addDaysLocal(wk, 7)) {
+            out.push(byWeek.get(wk) || { weekOf: wk, end: addDaysLocal(wk, 6), avg: null, count: 0, min: null, max: null, delta: null, gap: 0, partial: false, empty: true });
+          }
+          return out;
+        }, [weekly]);
+
+        const weeklyStats = React.useMemo(() => {
+          if (weekly.length === 0) return null;
+          const first = weekly[0], last = weekly[weekly.length - 1];
+          const span = weeksBetween(first.weekOf, last.weekOf);
+          return { last, weeks: weekly.length, perWeek: span > 0 ? (last.avg - first.avg) / span : null };
+        }, [weekly]);
+
+        const chipList = !statChips ? null : (viewMode === 'weekly' && weeklyStats ? [
+          { label: weeklyStats.last.partial ? 'This week avg' : 'Latest week avg', val: weeklyStats.last.avg.toFixed(1) + ' kg' },
+          { label: 'Δ vs prev week', val: fmtDelta(weeklyStats.last.delta), color: deltaTone(weeklyStats.last.delta) },
+          { label: 'Avg Δ / week',   val: fmtDelta(weeklyStats.perWeek),    color: deltaTone(weeklyStats.perWeek) },
+          { label: 'Weeks',          val: String(weeklyStats.weeks) },
+        ] : [
+          { label: 'Current',      val: statChips.latest + ' kg' },
+          { label: 'All-time avg', val: statChips.avg + ' kg' },
+          ...(statChips.avg7 ? [{ label: '7-day avg', val: statChips.avg7 + ' kg' }] : []),
+          { label: 'Total Δ', val: (statChips.delta > 0 ? '+' : '') + statChips.delta.toFixed(1) + ' kg', color: statChips.delta < 0 ? '#16a34a' : statChips.delta > 0 ? '#dc2626' : undefined },
+          { label: 'Entries', val: String(weights.length) },
+        ]);
+
+        const rollingAvg = (data, isoDates, window) => data.map((_, i) => {
+          const pivot = new Date(isoDates[i]);
+          const windowStart = new Date(pivot); windowStart.setDate(windowStart.getDate() - (window - 1));
+          const inWindow = [];
+          for (let j = 0; j <= i; j++) {
+            const d = new Date(isoDates[j]);
+            if (d >= windowStart && d <= pivot) inWindow.push(data[j]);
+          }
+          return inWindow.length > 0 ? inWindow.reduce((a,b) => a+b, 0) / inWindow.length : null;
+        });
+
+        useEffect(() => {
+          const canvas = weightChartRef.current;
+          if (!canvas) return;
+          if (canvas._chart) { canvas._chart.destroy(); canvas._chart = null; }
+          if (sorted.length === 0) return;
+          const isoDates = sorted.map(e => e.date);
+          const rawData = sorted.map(e => e.weight);
+          const avgData = rollingAvg(rawData, isoDates, 7);
+          // Real time axis: each point sits at its actual date, so gaps in logging show up as gaps.
+          const dayNums = isoDates.map(isoToDayNum);
+          const firstX = dayNums[0], lastX = dayNums[dayNums.length - 1];
+          const xSpan = lastX - firstX;
+          const xPad = xSpan === 0 ? 3 : Math.max(0.5, xSpan * 0.03);
+          const xMin = firstX - xPad, xMax = lastX + xPad;
+          const rawPts = rawData.map((y, i) => ({ x: dayNums[i], y }));
+          const avgPts = avgData.map((y, i) => ({ x: dayNums[i], y }));
+          const tickInfo = niceDateTicks(xMin, xMax);
+          const tickFmt = tickInfo.monthly ? { month: 'short', year: '2-digit' } : { day: 'numeric', month: 'short' };
+          const isDark = document.documentElement.classList.contains('dark');
+          const mainColor = isDark ? '#22d3ee' : '#0891b2';
+          const avgColor  = isDark ? '#f59e0b' : '#d97706';
+          const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+          const tickColor = isDark ? '#94a3b8' : '#64748b';
+          const ctx = canvas.getContext('2d');
+          const gradient = ctx.createLinearGradient(0, 0, 0, 380);
+          gradient.addColorStop(0, mainColor + '35');
+          gradient.addColorStop(1, mainColor + '00');
+          canvas._chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              datasets: [
+                { label: 'Weight (kg)', data: rawPts, borderColor: mainColor, backgroundColor: gradient, borderWidth: 2, cubicInterpolationMode: 'monotone', fill: true, pointBackgroundColor: mainColor, pointRadius: rawData.length > 20 ? 2 : 4, pointHoverRadius: 6, order: 2 },
+                { label: '7-day avg',   data: avgPts,   borderColor: avgColor,  backgroundColor: 'transparent', borderWidth: 2, borderDash: [5,4], cubicInterpolationMode: 'monotone', fill: false, pointRadius: 0, pointHoverRadius: 5, order: 1 }
+              ]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              interaction: { mode: 'index', intersect: false },
+              scales: {
+                x: {
+                  type: 'linear', min: xMin, max: xMax,
+                  afterBuildTicks: (scale) => { scale.ticks = tickInfo.ticks.map(value => ({ value })); },
+                  grid: { color: gridColor },
+                  ticks: { color: tickColor, maxRotation: 0, autoSkip: true, font: { size: 11 }, callback: v => fmtDayNum(v, tickFmt) }
+                },
+                y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, callback: v => v + ' kg' } }
+              },
+              plugins: {
+                legend: { display: true, position: 'top', align: 'end', labels: { color: tickColor, font: { size: 11 }, boxWidth: 20, padding: 12, usePointStyle: true } },
+                tooltip: {
+                  backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                  titleColor: isDark ? '#f1f5f9' : '#1a1a1a',
+                  bodyColor: isDark ? '#94a3b8' : '#64748b',
+                  borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                  borderWidth: 1, padding: 10,
+                  callbacks: {
+                    title: (items) => isoDates[items[0].dataIndex],
+                    label: (item) => { const v = item.parsed.y; if (v === null) return null; return ` ${item.dataset.label}: ${Number(v).toFixed(1)} kg`; }
+                  }
+                }
+              }
+            }
+          });
+          return () => { if (canvas._chart) { canvas._chart.destroy(); canvas._chart = null; } };
+        }, [weights, state.theme, sorted, viewMode]);
+
+        // Weekly view: weekly-average line on top, week-over-week change bars underneath (aligned columns).
+        useEffect(() => {
+          if (viewMode !== 'weekly' || weekly.length === 0) return;
+          const avgCanvas = weeklyAvgRef.current;
+          const deltaCanvas = weeklyDeltaRef.current; // absent until there are two weeks of data
+          if (!avgCanvas) return;
+
+          const n = weeklyGrid.length;
+          const isDark = document.documentElement.classList.contains('dark');
+          const mainColor = isDark ? '#22d3ee' : '#0891b2';
+          const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+          const zeroColor = isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.30)';
+          const tickColor = isDark ? '#94a3b8' : '#64748b';
+          const labelColor = isDark ? '#e2e8f0' : '#334155';
+          const cardBg = isDark ? '#1e293b' : '#ffffff';
+          const good = isDark ? '74,222,128' : '22,163,74';    // weight down
+          const bad  = isDark ? '248,113,113' : '220,38,38';   // weight up
+          const labels = weeklyGrid.map(w => fmtShort(w.weekOf));
+          const Y_WIDTH = 64; // same y-axis width on both charts keeps the week columns aligned
+
+          // Draws small value labels above points/bars, but only when there's enough room per column.
+          const makeValueLabels = ({ format, color, signed, gap = 8, minStep = 40 }) => ({
+            id: 'valueLabels',
+            afterDatasetsDraw(chart) {
+              const meta = chart.getDatasetMeta(0);
+              const data = chart.data.datasets[0].data;
+              if (!meta.data.length || chart.chartArea.width / meta.data.length < minStep) return;
+              const ctx = chart.ctx;
+              ctx.save();
+              ctx.font = `600 10.5px ${Chart.defaults.font.family}`;
+              ctx.textAlign = 'center';
+              meta.data.forEach((el, i) => {
+                const v = data[i];
+                if (v === null || v === undefined) return;
+                const below = signed && v < 0;
+                ctx.fillStyle = typeof color === 'function' ? color(v, i) : color;
+                ctx.textBaseline = below ? 'top' : 'bottom';
+                ctx.fillText(format(v, i), el.x, el.y + (below ? gap - 2 : -gap));
+              });
+              ctx.restore();
+            }
+          });
+
+          const tooltip = {
+            displayColors: false,
+            backgroundColor: cardBg,
+            titleColor: isDark ? '#f1f5f9' : '#1a1a1a',
+            bodyColor: isDark ? '#cbd5e1' : '#475569',
+            borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+            borderWidth: 1, padding: 10, bodySpacing: 3,
+            callbacks: {
+              title: (items) => {
+                const w = weeklyGrid[items[0].dataIndex];
+                return `${fmtShort(w.weekOf)} – ${fmtShort(w.end)} ${isoToLocal(w.end).getFullYear()}`;
+              },
+              label: (item) => {
+                const w = weeklyGrid[item.dataIndex];
+                if (!w || w.avg === null) return null;   // week without entries
+                const lines = [
+                  `Average: ${w.avg.toFixed(1)} kg`,
+                  w.delta === null ? 'Change: —' : `Change vs ${w.gap > 1 ? w.gap + ' weeks earlier' : 'prev week'}: ${fmtDelta(w.delta)}`,
+                  `${w.count} ${w.count === 1 ? 'entry' : 'entries'}${w.count > 1 ? ` · ${w.min.toFixed(1)}–${w.max.toFixed(1)} kg` : ''}`
+                ];
+                if (w.partial) lines.push('Week in progress');
+                return lines;
+              }
+            }
+          };
+
+          const avgCtx = avgCanvas.getContext('2d');
+          const avgChart = new Chart(avgCtx, {
+            type: 'line',
+            plugins: [makeValueLabels({ format: v => v.toFixed(1), color: labelColor, minStep: 44, gap: 10 })],
+            data: {
+              labels,
+              datasets: [{
+                label: 'Weekly avg (kg)',
+                data: weeklyGrid.map(w => w.avg === null ? null : Number(w.avg.toFixed(2))),
+                spanGaps: true,
+                borderColor: mainColor, borderWidth: 2.5, tension: 0.35, fill: true,
+                backgroundColor: (c) => {
+                  const area = c.chart.chartArea;
+                  if (!area) return 'transparent';
+                  const g = c.chart.ctx.createLinearGradient(0, area.top, 0, area.bottom);
+                  g.addColorStop(0, mainColor + '35'); g.addColorStop(1, mainColor + '00');
+                  return g;
+                },
+                pointRadius: n > 30 ? 3 : 5, pointHoverRadius: 7, pointBorderWidth: 2,
+                // the in-progress week gets a hollow point and a dashed final segment
+                pointBackgroundColor: weeklyGrid.map(w => w.partial ? cardBg : mainColor),
+                pointBorderColor: weeklyGrid.map(w => w.partial ? mainColor : cardBg),
+                segment: { borderDash: (c) => (weeklyGrid[c.p1DataIndex] && weeklyGrid[c.p1DataIndex].partial) ? [5, 4] : undefined }
+              }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              layout: { padding: { top: 18, right: 8 } },
+              interaction: { mode: 'index', intersect: false },
+              scales: {
+                x: { offset: true, grid: { color: gridColor }, border: { display: false }, ticks: { display: false } },
+                y: {
+                  grace: '10%', grid: { color: gridColor }, border: { display: false },
+                  ticks: { color: tickColor, font: { size: 11 }, maxTicksLimit: 5, callback: v => Number(v).toFixed(1) + ' kg' },
+                  afterFit: (s) => { s.width = Y_WIDTH; }
+                }
+              },
+              plugins: { legend: { display: false }, tooltip }
+            }
+          });
+
+          let deltaChart = null;
+          if (deltaCanvas && n > 1) {
+            const deltas = weeklyGrid.map(w => w.delta === null ? null : Number(w.delta.toFixed(2)));
+            const maxAbs = Math.max(0.3, ...deltas.map(d => d === null ? 0 : Math.abs(d)));
+            // symmetric axis around zero (−b, −b/2, 0, b/2, b) with headroom for the value labels
+            const bound = [0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find(b => b >= maxAbs * 1.3) || Math.ceil(maxAbs * 1.3);
+            const step = bound / 2;
+            const rgb = (w) => (w.delta <= 0 ? good : bad);
+            deltaChart = new Chart(deltaCanvas.getContext('2d'), {
+              type: 'bar',
+              plugins: [makeValueLabels({
+                format: v => fmtDeltaNum(v), signed: true, gap: 6, minStep: 34,
+                color: (v) => `rgb(${v <= 0 ? good : bad})`
+              })],
+              data: {
+                labels,
+                datasets: [{
+                  label: 'Change vs previous week (kg)',
+                  data: deltas,
+                  backgroundColor: weeklyGrid.map(w => w.delta === null ? 'transparent' : `rgba(${rgb(w)},${w.partial ? 0.35 : 0.85})`),
+                  borderColor: weeklyGrid.map(w => w.delta === null ? 'transparent' : `rgb(${rgb(w)})`),
+                  borderWidth: weeklyGrid.map(w => w.partial ? 1.5 : 0),
+                  borderRadius: 5, borderSkipped: false, maxBarThickness: 34
+                }]
+              },
+              options: {
+                responsive: true, maintainAspectRatio: false,
+                layout: { padding: { right: 8 } },
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                  x: { grid: { display: false }, border: { display: false }, ticks: { color: tickColor, font: { size: 11 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 } },
+                  y: {
+                    min: -bound, max: bound,
+                    border: { display: false },
+                    grid: { color: (c) => c.tick && c.tick.value === 0 ? zeroColor : gridColor, lineWidth: (c) => c.tick && c.tick.value === 0 ? 1.5 : 1 },
+                    ticks: { color: tickColor, font: { size: 11 }, stepSize: step, callback: v => v === 0 ? '0' : (v > 0 ? '+' : '−') + Number(Math.abs(v).toFixed(2)) },
+                    afterFit: (s) => { s.width = Y_WIDTH; }
+                  }
+                },
+                plugins: { legend: { display: false }, tooltip }
+              }
+            });
+          }
+
+          return () => { avgChart.destroy(); if (deltaChart) deltaChart.destroy(); };
+        }, [weeklyGrid, weekly, viewMode, state.theme]);
+
+        const entriesSorted = [...sorted].reverse();
+
+        return (
+          <Card className="p-6">
+            <div className="card-headline">
+              <div className="title"><span className="text-xl">⚖️</span><h3 className="text-lg font-semibold">Weight Trend</h3></div>
+              {weights.length > 0 && (
+                <div className="actions">
+                  <div className="seg" role="tablist" aria-label="Weight chart view">
+                    <button role="tab" aria-selected={viewMode === 'daily'} className={viewMode === 'daily' ? 'on' : ''} onClick={() => setViewMode('daily')}>Daily</button>
+                    <button role="tab" aria-selected={viewMode === 'weekly'} className={viewMode === 'weekly' ? 'on' : ''} onClick={() => setViewMode('weekly')}>Weekly</button>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={() => setShowEntries(v => !v)}>{showEntries ? '▲ Hide' : '✏️ Edit entries'}</Button>
+                </div>
+              )}
+            </div>
+            {chipList && (
+              <div className="flex flex-wrap gap-3 mb-4">
+                {chipList.map(chip => (
+                  <div key={chip.label} className="card p-3 flex flex-col items-center min-w-[72px]" style={{background:'var(--muted)'}}>
+                    <span className="text-xs mb-1" style={{color:'var(--muted-foreground)'}}>{chip.label}</span>
+                    <span className="text-base font-bold" style={chip.color ? {color: chip.color} : {}}>{chip.val}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {weights.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 text-center" style={{color:'var(--muted-foreground)'}}>
+                <span className="text-4xl mb-3">⚖️</span>
+                <p className="font-medium">No weight entries yet</p>
+                <p className="text-xs mt-1">Log your weight on the Dashboard to see your trend here.</p>
+              </div>
+            ) : viewMode === 'weekly' ? (
+              <div key="weekly">
+                <div className="flex items-baseline justify-between mb-1">
+                  <span className="text-xs font-semibold" style={{color:'var(--muted-foreground)', letterSpacing:'.06em'}}>WEEKLY AVERAGE</span>
+                  <span className="text-xs" style={{color:'var(--muted-foreground)'}}>Mon–Sun weeks</span>
+                </div>
+                <div className="relative" style={{height:'230px'}}><canvas ref={weeklyAvgRef}></canvas></div>
+                {weekly.length > 1 ? (
+                  <>
+                    <div className="flex items-baseline justify-between mt-4 mb-1">
+                      <span className="text-xs font-semibold" style={{color:'var(--muted-foreground)', letterSpacing:'.06em'}}>CHANGE VS PREVIOUS WEEK</span>
+                      <span className="text-xs inline-flex items-center gap-3" style={{color:'var(--muted-foreground)'}}>
+                        <span className="inline-flex items-center gap-1"><span style={{display:'inline-block',width:8,height:8,borderRadius:9999,background:'#16a34a'}}/>Down</span>
+                        <span className="inline-flex items-center gap-1"><span style={{display:'inline-block',width:8,height:8,borderRadius:9999,background:'#dc2626'}}/>Up</span>
+                      </span>
+                    </div>
+                    <div className="relative" style={{height:'150px'}}><canvas ref={weeklyDeltaRef}></canvas></div>
+                  </>
+                ) : (
+                  <p className="text-xs text-center mt-4" style={{color:'var(--muted-foreground)'}}>Log weight in a second week to see week-over-week change.</p>
+                )}
+                {weekly.some(w => w.partial) && (
+                  <p className="text-xs mt-2" style={{color:'var(--muted-foreground)'}}>Hollow point / dashed line / faded bar = current week, still in progress.</p>
+                )}
+                {weeklyGrid.some(w => w.empty) && (
+                  <p className="text-xs mt-1" style={{color:'var(--muted-foreground)'}}>Weeks without entries are left blank. A bar after a gap shows the change since the last logged week.</p>
+                )}
+              </div>
+            ) : (
+              <div key="daily" className="relative" style={{height:'340px'}}><canvas ref={weightChartRef}></canvas></div>
+            )}
+            {showEntries && (
+              <div className="mt-5 border-t pt-4" style={{borderColor:'var(--border)'}}>
+                <p className="text-xs font-semibold mb-3" style={{color:'var(--muted-foreground)'}}>ALL ENTRIES — newest first</p>
+                <div style={{maxHeight:'260px', overflowY:'auto'}} className="space-y-1 pr-1">
+                  {entriesSorted.map(entry => (
+                    <div key={entry.id} className="rounded-lg px-3 py-2" style={{background:'var(--muted)'}}>
+                      {editingId === entry.id ? (
+                        <div className="flex flex-wrap items-center gap-2">
+                          <input type="date" className="input h-8" style={{background:'#f8fafc',color:'#1a1a1a',paddingLeft:'0.5rem',paddingRight:'0.5rem',width:'9rem'}} value={editDate} onChange={e => setEditDate(e.target.value)}/>
+                          <input type="number" className="input h-8" style={{background:'#f8fafc',color:'#1a1a1a',paddingLeft:'0.5rem',paddingRight:'0.5rem',width:'6rem'}} value={editWeight} onChange={e => setEditWeight(e.target.value)}/>
+                          <Button size="sm" variant="success" onClick={() => saveEdit(entry.id)}>Save</Button>
+                          <Button size="sm" variant="ghost" onClick={cancelEdit}>Cancel</Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">
+                            {entry.date} — <strong>{entry.weight} kg</strong>
+                            {dupDates.has(entry.date) && (
+                              <span className="ml-2" title="Another entry exists for this date. Both count towards the averages, so delete or edit one."
+                                style={{fontSize:'.68rem',fontWeight:600,padding:'1px 7px',borderRadius:9999,background:'rgba(217,119,6,.15)',color:'#d97706'}}>duplicate date</span>
+                            )}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <Button size="sm" variant="outline" onClick={() => startEdit(entry)}>✏️</Button>
+                            <Button size="sm" variant="danger" onClick={() => { if(window.confirm('Delete this entry?')) deleteWeightEntry(entry.id); }}>🗑️</Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Card>
+        );
+      };
+
+      // ─── Volume Chart Card ───────────────────────────────────────────────────
+      const VolumeChartCard = () => {
+        const [metric, setMetric] = useState('overall');
+        const chartRef = useRef(null);
+        const chartInstance = useRef(null);
+
+        const { labels, data } = chartDataForMetric(metric);
+        const nonZero = data.filter(v => v > 0);
+        const latestVal = data[data.length - 1] ?? 0;
+        const prevVal   = data[data.length - 2] ?? null;
+        const weekDelta = prevVal !== null ? latestVal - prevVal : null;
+        const peakVal   = nonZero.length > 0 ? Math.max(...nonZero) : 0;
+        const avgVal    = nonZero.length > 0 ? (nonZero.reduce((a,b)=>a+b,0)/nonZero.length).toFixed(0) : 0;
+
+        useEffect(() => {
+          if (!chartRef.current) return;
+          if (chartInstance.current) { chartInstance.current.destroy(); chartInstance.current = null; }
+          const isDark = document.documentElement.classList.contains('dark');
+          const lineColor = isDark ? '#22d3ee' : '#0891b2';
+          const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+          const tickColor = isDark ? '#94a3b8' : '#64748b';
+          const ctx = chartRef.current.getContext('2d');
+          const gradient = ctx.createLinearGradient(0, 0, 0, 320);
+          gradient.addColorStop(0, lineColor + '40');
+          gradient.addColorStop(1, lineColor + '00');
+          chartInstance.current = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [{
+                label: progressMetrics.find(x=>x.key===metric)?.label || 'Overall',
+                data,
+                tension: 0.4, fill: true,
+                backgroundColor: gradient, borderColor: lineColor, borderWidth: 2.5,
+                pointBackgroundColor: lineColor, pointRadius: data.length > 12 ? 2 : 4, pointHoverRadius: 6,
+              }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              interaction: { mode: 'index', intersect: false },
+              scales: {
+                x: { grid: { color: gridColor }, ticks: { color: tickColor, maxRotation: 35, font: { size: 11 } } },
+                y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 } } }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                  titleColor: isDark ? '#f1f5f9' : '#1a1a1a',
+                  bodyColor: isDark ? '#94a3b8' : '#64748b',
+                  borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                  borderWidth: 1, padding: 10,
+                  callbacks: { label: (item) => ` ${item.parsed.y} reps` }
+                }
+              }
+            }
+          });
+          return () => { if (chartInstance.current) { chartInstance.current.destroy(); chartInstance.current = null; } };
+        }, [logs, metric, state.theme]);
+
+        return (
+          <Card className="p-6">
+            <div className="card-headline">
+              <div className="title"><TrendingUp className="icon-primary"/><h2 className="text-lg font-semibold">Weekly Volume</h2></div>
+              <div className="actions">
+                <select className="select-trigger" value={metric} onChange={(e)=>setMetric(e.target.value)}>
+                  {progressMetrics.map(m=> <option key={m.key} value={m.key}>{m.label}</option>)}
+                </select>
+              </div>
+            </div>
+            {nonZero.length > 0 && (
+              <div className="flex flex-wrap gap-3 mb-4">
+                {[
+                  { label: 'This week',    val: String(latestVal) },
+                  ...(weekDelta !== null ? [{ label: 'vs last week', val: (weekDelta > 0 ? '+' : '') + weekDelta, color: weekDelta > 0 ? '#16a34a' : weekDelta < 0 ? '#dc2626' : undefined }] : []),
+                  { label: 'Avg / week',   val: String(avgVal) },
+                  { label: 'Peak',         val: String(peakVal) },
+                ].map(chip => (
+                  <div key={chip.label} className="card p-3 flex flex-col items-center min-w-[72px]" style={{background:'var(--muted)'}}>
+                    <span className="text-xs mb-1" style={{color:'var(--muted-foreground)'}}>{chip.label}</span>
+                    <span className="text-base font-bold" style={chip.color ? {color: chip.color} : {}}>{chip.val}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="relative" style={{height:'320px'}}><canvas ref={chartRef}></canvas></div>
+            <div className="mt-3 text-xs" style={{color:'var(--muted-foreground)'}}>
+              💡 <strong>Pro tip:</strong> Consider a deload every 4–8 weeks (reduce volume ~30–50%, keep technique crisp, leave 2–3 RIR).
+            </div>
+          </Card>
+        );
+      };
+
+      // ─── Weekly Summary Table ────────────────────────────────────────────────
+      const WeeklySummaryTable = () => {
+        const [open, setOpen] = useState(false);
+        const [filter, setFilter] = useState('overall');
+
+        const rows = weeksHistory().slice().reverse();
+        const totals = (w) => { const s = repsSummary(w.weekOf); return { ...s, overall: Object.values(s).reduce((a,b) => a+Number(b||0), 0) }; };
+
+        const exportCSV = () => {
+          const COLS = progressMetrics.filter(m => m.key !== 'overall');
+          const header = ['Week of','Deload', ...COLS.map(c => c.label), 'Overall'];
+          const lines = [header.join(',')];
+          rows.forEach(w => {
+            const t = totals(w);
+            lines.push([w.weekOf, w.deload ? 'Yes' : 'No', ...COLS.map(c => String(t[c.key]||0)), String(t.overall||0)].join(','));
+          });
+          const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+          const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'weekly-summary.csv'; a.click(); URL.revokeObjectURL(a.href);
+        };
+
+        const clearAll = () => { if(window.confirm('This will delete all log data. Are you sure?')) setLogs([]); };
+
+        const rowDelta = (rows, i, key) => {
+          if (i >= rows.length - 1) return null;
+          const curr = totals(rows[i]);
+          const prev = totals(rows[i + 1]);
+          const cv = key === 'overall' ? curr.overall : (curr[key]||0);
+          const pv = key === 'overall' ? prev.overall : (prev[key]||0);
+          return cv - pv;
+        };
+
+        const DeltaChip = ({ val }) => {
+          if (val === null || val === 0) return null;
+          const up = val > 0;
+          return (
+            <span style={{display:'inline-flex',alignItems:'center',gap:'2px',fontSize:'0.7rem',fontWeight:600,padding:'1px 5px',borderRadius:'9999px',background:up?'rgba(34,197,94,0.15)':'rgba(239,68,68,0.12)',color:up?'#16a34a':'#dc2626',marginLeft:'4px'}}>
+              {up ? '▲' : '▼'}{Math.abs(val)}
+            </span>
+          );
+        };
+
+        const displayCols = filter === 'overall'
+          ? progressMetrics.filter(m => m.key !== 'overall')
+          : progressMetrics.filter(m => m.key === filter);
+
+        return (
+          <div>
+            <button
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl border hover-lift"
+              style={{background:'var(--card)', borderColor:'var(--border)', cursor:'pointer'}}
+              onClick={() => setOpen(v => !v)}
+            >
+              <div className="flex items-center gap-2">
+                <TrendingUp className="icon-primary" size={16}/>
+                <span className="font-semibold text-sm">Weekly Summary</span>
+                <span className="badge">{rows.length} weeks</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); exportCSV(); }}><Download/><span className="ml-1 hidden sm:inline">CSV</span></Button>
+                <Button variant="danger" size="sm" onClick={(e) => { e.stopPropagation(); clearAll(); }}><Broom/><span className="ml-1 hidden sm:inline">Clear</span></Button>
+                <Caret dir={open ? 'up' : 'down'}/>
+              </div>
+            </button>
+            {open && (
+              <div className="card mt-2 p-4">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-xs font-semibold" style={{color:'var(--muted-foreground)'}}>Filter:</span>
+                  <select className="select-trigger text-sm" value={filter} onChange={e => setFilter(e.target.value)}>
+                    <option value="overall">All exercises</option>
+                    {progressMetrics.filter(m => m.key !== 'overall').map(m => <option key={m.key} value={m.key}>{m.label}</option>)}
+                  </select>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Week</th><th>Deload</th>
+                        {filter === 'overall' ? displayCols.map(c => <th key={c.key}>{c.label}</th>) : <th>{displayCols[0]?.label}</th>}
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.map((w, i) => {
+                        const t = totals(w);
+                        return (
+                          <tr key={w.weekOf} style={w.deload ? {opacity:0.65,fontStyle:'italic'} : {}}>
+                            <td><a className="link text-xs" href="#" onClick={(e) => { e.preventDefault(); setState(p=>({...p, viewDate: w.weekOf})); setActiveTab('dashboard'); }}>{w.weekOf}</a></td>
+                            <td>{w.deload ? <span className="badge" style={{fontSize:'0.65rem'}}>Deload</span> : <span style={{color:'var(--muted-foreground)'}}>—</span>}</td>
+                            {filter === 'overall'
+                              ? displayCols.map(c => <td key={c.key}>{t[c.key]||0}<DeltaChip val={rowDelta(rows,i,c.key)}/></td>)
+                              : <td>{t[filter]||0}<DeltaChip val={rowDelta(rows,i,filter)}/></td>
+                            }
+                            <td><strong>{t.overall}</strong><DeltaChip val={rowDelta(rows,i,'overall')}/></td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      };
+
+      // ─── Progress view shell ─────────────────────────────────────────────────
+      const ProgressView = () => (
+        <main className="max-w-[96rem] mx-auto p-4 space-y-6">
+          <WeightChartCard/>
+          <VolumeChartCard/>
+          <WeeklySummaryTable/>
+        </main>
+      );
+      /* Render */
+      return (
+        <div className="min-h-screen" style={{background:'linear-gradient(135deg, var(--background) 0%, var(--muted) 100%)'}}>
+          <AppHeader activeTab={activeTab} setActiveTab={setActiveTab} onOpenBackup={openBackup} backupDue={backupDue}/>
+          {backupOpen && (
+            <div role="dialog" aria-modal="true" aria-label="Backup and restore" onClick={() => setBackupOpen(false)}
+                 style={{position:'fixed', inset:0, zIndex:100, background:'rgba(2,6,23,.55)', backdropFilter:'blur(2px)', display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem'}}>
+              <div className="card p-6 w-full" style={{maxWidth:'30rem'}} onClick={e => e.stopPropagation()}>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-lg font-semibold flex items-center gap-2"><span className="text-xl">💾</span>Backup &amp; restore</h3>
+                  <Button variant="ghost" size="sm" aria-label="Close" onClick={() => setBackupOpen(false)}>✕</Button>
+                </div>
+                <p className="text-sm mb-4" style={{color:'var(--muted-foreground)'}}>
+                  Everything you log lives in this browser only. Save a backup file now and then and keep it somewhere else, like a cloud drive or USB stick.
+                </p>
+                <div className="flex items-center justify-between rounded-lg px-3 py-2 mb-4" style={{background:'var(--muted)'}}>
+                  <span className="text-xs font-semibold" style={{color:'var(--muted-foreground)', letterSpacing:'.06em'}}>LAST BACKUP</span>
+                  <span className="text-sm font-medium" style={{color: backupDue ? '#d97706' : 'var(--foreground)'}}>
+                    {backupAgeDays === null
+                      ? 'Never'
+                      : `${new Date(lastBackup).toLocaleString(navigator.language, { dateStyle: 'medium', timeStyle: 'short' })} · ${backupAgeDays === 0 ? 'today' : backupAgeDays === 1 ? 'yesterday' : backupAgeDays + ' days ago'}`}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <Button onClick={handleExportBackup}><Download/><span className="ml-2">Export backup</span></Button>
+                  <Button variant="outline" onClick={() => backupFileRef.current && backupFileRef.current.click()}>Restore from file…</Button>
+                  <input ref={backupFileRef} type="file" accept=".json,application/json" style={{display:'none'}} onChange={handleRestoreFile}/>
+                </div>
+                <p className="text-xs mt-3" style={{color:'var(--muted-foreground)'}}>
+                  Restoring replaces everything currently in the app. If you're unsure, export first.
+                </p>
+                {backupMsg && (
+                  <div role="status" className="text-sm rounded-lg px-3 py-2 mt-4"
+                       style={backupMsg.kind === 'ok'
+                         ? {background:'rgba(22,163,74,.12)', color:'#16a34a'}
+                         : {background:'rgba(220,38,38,.12)', color:'#dc2626'}}>
+                    {backupMsg.text}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          {activeTab==='dashboard' && (
+            <main className="max-w-[96rem] mx-auto p-4 grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <WeeklyTargetsCard/>
+              {/* Group the logged entries and auxiliary cards into the right column for a more compact layout */}
+              <div className="space-y-4 flex flex-col">
+                <LoggedEntriesCard/>
+                {/* Arrange weight entry and rest timer side by side on medium screens and stacked on very small screens */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
+                  <WeightTrackerCard/>
+                  <RestTimerCard/>
+                </div>
+              </div>
+            </main>
+          )}
+          {activeTab==='progress' && <ProgressView/>}
+          <footer className="border-t" style={{borderColor:'var(--border)'}}>
+            <div className="max-w-[96rem] mx-auto px-4 py-6 text-center">
+              <p className="text-xs" style={{color:'var(--muted-foreground)'}}>Built for Patrick • <strong>Minimalist strength</strong> • Form &gt; reps • Tempo &amp; pauses turn light loads into real work</p>
+            </div>
+          </footer>
+        </div>
+      );
+    };
+
+    class ErrorBoundary extends React.Component {
+      constructor(props){ super(props); this.state = { hasError: false, error: null }; }
+      static getDerivedStateFromError(error){ return { hasError: true, error }; }
+      componentDidCatch(error, info){ console.error('App crashed:', error, info); }
+      resetData(){
+        try{
+          Object.keys(localStorage).filter(k=>k.startsWith('patrick-minimal-v12')||k==='patrick-theme').forEach(k=>localStorage.removeItem(k));
+        }catch(e){}
+        window.location.reload();
+      }
+      render(){
+        if(this.state.hasError){
+          return (
+            <div style={{padding:'2rem',fontFamily:'sans-serif',maxWidth:'480px',margin:'2rem auto',color:'#111'}}>
+              <h2>Something went wrong</h2>
+              <p>The app hit an error, likely from corrupted saved data. You can try resetting the app's local data below (this clears your saved workouts/settings on this device). If you want to keep a copy of your data first, download a backup.</p>
+              <pre style={{whiteSpace:'pre-wrap',background:'#f3f4f6',padding:'0.75rem',borderRadius:'6px',fontSize:'0.8rem'}}>{String(this.state.error && this.state.error.message)}</pre>
+              <button onClick={()=>{ try{ downloadBackup(); }catch(e){ alert('Could not create a backup: ' + e.message); } }} style={{marginTop:'1rem',marginRight:'0.5rem',padding:'0.5rem 1rem',background:'#fff',color:'#111',border:'1px solid #9ca3af',borderRadius:'6px',cursor:'pointer'}}>Download backup first</button>
+              <button onClick={()=>this.resetData()} style={{marginTop:'1rem',padding:'0.5rem 1rem',background:'#06b6d4',color:'#fff',border:'none',borderRadius:'6px',cursor:'pointer'}}>Reset app data & reload</button>
+            </div>
+          );
+        }
+        return this.props.children;
+      }
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<ErrorBoundary><App/></ErrorBoundary>);
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').catch(err => {
+          console.error('ServiceWorker registration failed:', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
