@@ -384,7 +384,7 @@
       if (X && !Array.isArray(X.json)) return fail('The exercise list in this backup is damaged.');
       const values = {};
       Object.entries(entries).forEach(([k, c]) => { values[k] = 'json' in c ? c.json : c.raw; });
-      return { ok: true, entries, exportedAt: typeof env.exportedAt === 'string' ? env.exportedAt : null, summary: summarizeBackupData(values), dropped };
+      return { ok: true, entries, exportedAt: typeof env.exportedAt === 'string' ? env.exportedAt : null, summary: summarizeBackupData(values), dropped, weightsList: W ? W.json : null, logsList: L ? L.json : null };
     };
     const applyBackup = (entries) => {
       const snapshot = {};
@@ -400,6 +400,51 @@
         } catch {}
         return { ok: false, error: 'Could not write the restored data (browser storage is full or blocked). Your existing data was kept.' };
       }
+    };
+
+    /* Merge a backup into the current data instead of replacing it. Never deletes anything.
+       Weights are matched by date (the backup's value wins on a clash); workout entries are matched by id.
+       Settings, exercises and the theme stay as they are on this device. */
+    const mergeBackupData = (curWeights, curLogs, bkWeights, bkLogs) => {
+      const stats = { addedWeights: 0, changedDates: 0, addedEntries: 0, newWeeks: 0 };
+      let weights = curWeights.slice();
+      if (Array.isArray(bkWeights)) {
+        const byDate = new Map();
+        bkWeights.forEach(e => { if (!byDate.has(e.date)) byDate.set(e.date, []); byDate.get(e.date).push(e); });
+        const sig = (a) => a.map(e => Number(e.weight)).sort((x, y) => x - y).join(',');
+        byDate.forEach((list, date) => {
+          const cur = weights.filter(e => e.date === date);
+          if (cur.length === 0) { weights = weights.concat(list); stats.addedWeights += list.length; return; }
+          if (sig(cur) === sig(list)) return;                       // already identical
+          weights = weights.filter(e => e.date !== date).concat(list);
+          stats.changedDates += 1;
+        });
+      }
+      const logs = curLogs.map(w => ({ ...w, entries: (w.entries || []).slice() }));
+      if (Array.isArray(bkLogs)) {
+        const sigOf = (e) => [e.date, e.ex, e.reps, e.type].join('|');
+        const ids = new Set(), noIdSigs = new Set();
+        logs.forEach(w => w.entries.forEach(e => { if (!e) return; if (e.id) ids.add(e.id); else noIdSigs.add(sigOf(e)); }));
+        bkLogs.forEach(bw => {
+          const incoming = (bw.entries || []).filter(e => {
+            if (!e) return false;
+            if (e.id) { if (ids.has(e.id)) return false; ids.add(e.id); return true; }
+            const sg = sigOf(e); if (noIdSigs.has(sg)) return false; noIdSigs.add(sg); return true;
+          });
+          let w = logs.find(x => x.weekOf === bw.weekOf);
+          if (!w) { if (incoming.length === 0 && !bw.deload) return; w = { ...bw, entries: [] }; logs.push(w); stats.newWeeks += 1; }
+          else if (bw.deload && !w.deload) w.deload = true;
+          w.entries.push(...incoming); stats.addedEntries += incoming.length;
+        });
+      }
+      return { weights, logs, stats };
+    };
+    const describeMerge = (st) => {
+      const parts = [];
+      if (st.addedWeights) parts.push(`${st.addedWeights} weight ${st.addedWeights === 1 ? 'entry' : 'entries'} added`);
+      if (st.changedDates) parts.push(`${st.changedDates} ${st.changedDates === 1 ? 'date' : 'dates'} updated with the backup's weight`);
+      if (st.addedEntries) parts.push(`${st.addedEntries} workout ${st.addedEntries === 1 ? 'entry' : 'entries'} added`);
+      return parts.length ? 'Merged: ' + parts.join(', ') + '.' : 'Nothing new to merge. This device already has everything in that backup.';
     };
 
     // Reads a JSON value from localStorage. If it exists but can't be read (or has the wrong shape), a copy is kept under
@@ -456,11 +501,21 @@
       const [backupMsg, setBackupMsg] = useState(null);   // { kind: 'ok' | 'error', text }
       const [lastBackup, setLastBackup] = useState(() => { try { return localStorage.getItem(BACKUP.LAST_KEY); } catch { return null; } });
       const backupFileRef = useRef(null);
+      const [pendingRestore, setPendingRestore] = useState(null);   // { res, when } while a chosen file awaits Merge / Replace / Cancel
+      const [storagePersisted, setStoragePersisted] = useState(null); // null = browser can't tell
+      const requestPersist = async () => {
+        try {
+          if (!(navigator.storage && navigator.storage.persist)) return;
+          const already = navigator.storage.persisted ? await navigator.storage.persisted() : false;
+          setStoragePersisted(already || !!(await navigator.storage.persist()));
+        } catch {}
+      };
+      useEffect(() => { requestPersist(); }, []);
       const trainingWeeks = logs.filter(w => w && w.entries && w.entries.length > 0).length;
       const backupAgeDays = (() => { const t = lastBackup ? new Date(lastBackup).getTime() : NaN; return Number.isFinite(t) ? Math.max(0, Math.floor((Date.now() - t) / 86400000)) : null; })();
       // Nudge (dot on the header button) once there is data and no backup in the last 30 days.
       const backupDue = (weights.length > 0 || trainingWeeks > 0) && (backupAgeDays === null || backupAgeDays >= 30);
-      const openBackup = () => { setBackupMsg(null); setBackupOpen(true); };
+      const openBackup = () => { setBackupMsg(null); setPendingRestore(null); setBackupOpen(true); requestPersist(); };
       useEffect(() => {
         if (!backupOpen) return;
         const onKey = (e) => { if (e.key === 'Escape') setBackupOpen(false); };
@@ -486,16 +541,21 @@
         if (!res.ok) { setBackupMsg({ kind: 'error', text: res.error }); return; }
         const when = res.exportedAt && !Number.isNaN(new Date(res.exportedAt).getTime())
           ? new Date(res.exportedAt).toLocaleString(navigator.language, { dateStyle: 'medium', timeStyle: 'short' }) : 'an unknown date';
-        const lines = [
-          `Restore the backup from ${when}?`, '',
-          `In the backup:  ${res.summary.weights} weight entries, ${res.summary.weeks} training weeks`,
-          `In the app now: ${weights.length} weight entries, ${trainingWeeks} training weeks`, '',
-          'This REPLACES everything currently in the app and cannot be undone.'
-        ];
-        if (res.dropped) lines.push('', `${res.dropped} invalid weight ${res.dropped === 1 ? 'entry' : 'entries'} in the file will be skipped.`);
-        if (!window.confirm(lines.join('\n'))) return;
-        const done = applyBackup(res.entries);
-        if (!done.ok) { setBackupMsg({ kind: 'error', text: done.error }); return; }
+        setBackupMsg(null);
+        setPendingRestore({ res, when });
+      };
+      const doMerge = () => {
+        if (!pendingRestore) return;
+        const m = mergeBackupData(weights, logs, pendingRestore.res.weightsList, pendingRestore.res.logsList);
+        setWeights(m.weights); setLogs(m.logs);
+        setPendingRestore(null);
+        setBackupMsg({ kind: 'ok', text: describeMerge(m.stats) });
+      };
+      const doReplace = () => {
+        if (!pendingRestore) return;
+        if (!window.confirm('Replace everything currently in the app with this backup?\n\nThis cannot be undone.')) return;
+        const done = applyBackup(pendingRestore.res.entries);
+        if (!done.ok) { setPendingRestore(null); setBackupMsg({ kind: 'error', text: done.error }); return; }
         window.location.reload();
       };
       // Rest timer state lives inside the RestTimerCard component so that updates to the
@@ -1806,14 +1866,49 @@
                       : `${new Date(lastBackup).toLocaleString(navigator.language, { dateStyle: 'medium', timeStyle: 'short' })} · ${backupAgeDays === 0 ? 'today' : backupAgeDays === 1 ? 'yesterday' : backupAgeDays + ' days ago'}`}
                   </span>
                 </div>
-                <div className="flex flex-wrap gap-3">
+                {storagePersisted !== null && (
+                  <div className="flex items-center justify-between gap-3 rounded-lg px-3 py-2 mb-4" style={{background:'var(--muted)'}}>
+                    <span className="text-xs font-semibold" style={{color:'var(--muted-foreground)', letterSpacing:'.06em'}}>BROWSER STORAGE</span>
+                    <span className="text-sm font-medium text-right" style={{color: storagePersisted ? 'var(--foreground)' : '#d97706'}}>
+                      {storagePersisted ? 'Protected from automatic cleanup' : 'Not protected: keep backups'}
+                    </span>
+                  </div>
+                )}
+                {pendingRestore && (() => {
+                  const r = pendingRestore.res;
+                  const canMerge = !!(r.weightsList || r.logsList);
+                  const m = canMerge ? mergeBackupData(weights, logs, r.weightsList, r.logsList).stats : null;
+                  const nothingNew = !!m && !m.addedWeights && !m.changedDates && !m.addedEntries;
+                  return (
+                    <div className="rounded-lg p-3 mb-3" style={{border:'1px solid var(--border)'}}>
+                      <p className="text-sm font-semibold mb-2">Backup from {pendingRestore.when}</p>
+                      <div className="text-sm mb-3" style={{color:'var(--muted-foreground)', lineHeight:1.6}}>
+                        <div>In the backup: {r.summary.weights} weight entries, {r.summary.weeks} training weeks</div>
+                        <div>In the app now: {weights.length} weight entries, {trainingWeeks} training weeks</div>
+                        {canMerge && <div style={{color:'var(--foreground)', marginTop:'.35rem'}}>{nothingNew ? 'Merge: nothing new, this device already has it all.' : 'Merge would add ' + [m.addedWeights && `${m.addedWeights} weight ${m.addedWeights === 1 ? 'entry' : 'entries'}`, m.changedDates && `update ${m.changedDates} ${m.changedDates === 1 ? 'date' : 'dates'}`, m.addedEntries && `${m.addedEntries} workout ${m.addedEntries === 1 ? 'entry' : 'entries'}`].filter(Boolean).join(', ') + '.'}</div>}
+                        {r.dropped ? <div style={{color:'#d97706'}}>{r.dropped} invalid weight {r.dropped === 1 ? 'entry' : 'entries'} in the file will be skipped.</div> : null}
+                      </div>
+                      <div className="flex flex-wrap gap-3">
+                        {canMerge && <Button onClick={doMerge} disabled={nothingNew}>Merge into current data</Button>}
+                        <Button variant="outline" onClick={doReplace}>Replace everything</Button>
+                        <Button variant="ghost" onClick={() => setPendingRestore(null)}>Cancel</Button>
+                      </div>
+                      <p className="text-xs mt-3" style={{color:'var(--muted-foreground)'}}>
+                        Merge adds what's missing and never deletes anything. Weights are matched by date and the backup's value wins on a clash; workout entries are matched by ID. Settings on this device stay as they are. Replace wipes the app and loads the backup instead.
+                      </p>
+                    </div>
+                  );
+                })()}
+                <div className="flex flex-wrap gap-3" style={pendingRestore ? {display:'none'} : undefined}>
                   <Button onClick={handleExportBackup}><Download/><span className="ml-2">Export backup</span></Button>
                   <Button variant="outline" onClick={() => backupFileRef.current && backupFileRef.current.click()}>Restore from file…</Button>
                   <input ref={backupFileRef} type="file" accept=".json,application/json" style={{display:'none'}} onChange={handleRestoreFile}/>
                 </div>
-                <p className="text-xs mt-3" style={{color:'var(--muted-foreground)'}}>
-                  Restoring replaces everything currently in the app. If you're unsure, export first.
-                </p>
+                {!pendingRestore && (
+                  <p className="text-xs mt-3" style={{color:'var(--muted-foreground)'}}>
+                    Restoring lets you merge the file into your current data or replace it. If you're unsure, export first.
+                  </p>
+                )}
                 {backupMsg && (
                   <div role="status" className="text-sm rounded-lg px-3 py-2 mt-4"
                        style={backupMsg.kind === 'ok'

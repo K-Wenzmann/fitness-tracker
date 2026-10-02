@@ -38,28 +38,51 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Network first, cache as the fallback.
+// Network first, cache as the fallback. On a weak connection a request that hasn't answered within
+// NETWORK_TIMEOUT_MS is served from the cache instead (if there is a copy); the network request keeps
+// running in the background and refreshes the cache for next time.
+// After one timeout the connection is treated as slow for SLOW_MODE_MS: requests that have a cached copy are
+// answered from it straight away, so a page with many files doesn't wait 3 s for each round of requests.
+const NETWORK_TIMEOUT_MS = 3000;
+const SLOW_MODE_MS = 60000;
+let slowUntil = 0;
+
 self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET' || !request.url.startsWith('http')) return;
 
-  event.respondWith(
-    fetch(request)
-      .then(response => {
-        // Keep a copy of good responses (opaque = cross-origin script loaded without CORS).
-        if (response && (response.ok || response.type === 'opaque')) {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(request, copy)).catch(() => {});
-        }
-        return response;
-      })
-      .catch(() =>
-        caches.match(request).then(cached => {
-          if (cached) return cached;
-          // Offline navigation to a URL we never cached: fall back to the app shell.
-          if (request.mode === 'navigate') return caches.match('./index.html');
-          return Response.error();
-        })
-      )
-  );
+  event.respondWith((async () => {
+    const networkPromise = fetch(request).then(response => {
+      // Keep a copy of good responses (opaque = cross-origin script loaded without CORS).
+      if (response && (response.ok || response.type === 'opaque')) {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(request, copy)).catch(() => {});
+      }
+      return response;
+    });
+    event.waitUntil(networkPromise.catch(() => {}));   // let a slow request finish and refresh the cache
+
+    if (Date.now() < slowUntil) {
+      const hit = await caches.match(request);
+      if (hit) return hit;
+    }
+
+    let timer;
+    const timeout = new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('timeout')), NETWORK_TIMEOUT_MS); });
+    try {
+      return await Promise.race([networkPromise, timeout]);
+    } catch (err) {
+      if (err && err.message === 'timeout') slowUntil = Date.now() + SLOW_MODE_MS;
+      const cached = await caches.match(request);
+      if (cached) return cached;
+      if (request.mode === 'navigate') {
+        const shell = await caches.match('./index.html');
+        if (shell) return shell;
+      }
+      // Nothing cached: keep waiting for the network, or fail if it fails.
+      try { return await networkPromise; } catch (e) { return Response.error(); }
+    } finally {
+      clearTimeout(timer);
+    }
+  })());
 });
