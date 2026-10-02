@@ -251,8 +251,8 @@
               onChange={e => setDuration(Math.max(0, Number(e.target.value) || 0))}
               placeholder="Sec"
               style={{
-                background: '#f8fafc',
-                color: '#1a1a1a',
+                background: 'var(--input-background)',
+                color: 'var(--foreground)',
                 paddingLeft: '0.75rem',
                 paddingRight: '0.75rem'
               }}
@@ -738,8 +738,8 @@
                 /* Always display this field using the light theme colours. We set a light background and dark text,
                    and add horizontal padding for legibility. */
                 style={{
-                  background: '#f8fafc',
-                  color: '#1a1a1a',
+                  background: 'var(--input-background)',
+                  color: 'var(--foreground)',
                   paddingLeft: '0.75rem',
                   paddingRight: '0.75rem'
                 }}
@@ -753,8 +753,8 @@
                 onChange={e => setWeightValue(e.target.value)}
                 /* Always show this field in light mode colours. Set a light background, dark text and horizontal padding. */
                 style={{
-                  background: '#f8fafc',
-                  color: '#1a1a1a',
+                  background: 'var(--input-background)',
+                  color: 'var(--foreground)',
                   paddingLeft: '0.75rem',
                   paddingRight: '0.75rem'
                 }}
@@ -902,7 +902,7 @@
                         onChange={e => setName(e.target.value)}
                         placeholder="Exercise name"
                         /* Force light mode styling for edit fields: white background, dark text, and horizontal padding */
-                        style={{ background: '#f8fafc', color: '#1a1a1a', paddingLeft: '0.75rem', paddingRight: '0.75rem' }}
+                        style={{ background: 'var(--input-background)', color: 'var(--foreground)', paddingLeft: '0.75rem', paddingRight: '0.75rem' }}
                       />
                       <Input
                         className="input h-8 w-14 text-center"
@@ -913,8 +913,8 @@
                         placeholder="Target sets"
                         /* Force light mode styling for edit fields: white background and dark text, with padding for readability */
                         style={{
-                          background: '#f8fafc',
-                          color: '#1a1a1a',
+                          background: 'var(--input-background)',
+                          color: 'var(--foreground)',
                           paddingLeft: '0.75rem',
                           paddingRight: '0.75rem'
                         }}
@@ -1095,7 +1095,7 @@
                         setState((p) => ({ ...p, weekOf: startOfISOWeek(e.target.value || isoToday()) }))
                       }
                       /* Force light background and dark text even in dark mode */
-                      style={{ background: '#f8fafc', color: '#1a1a1a' }}
+                      style={{ background: 'var(--input-background)', color: 'var(--foreground)' }}
                     />
                   </div>
                   <Button variant="ghost" size="sm" aria-label="Next week" onClick={()=> setState(p=>({...p, weekOf: startOfISOWeek(addDays(p.weekOf||isoToday(), 7))}))}>›</Button>
