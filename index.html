@@ -42,7 +42,10 @@
     .input{background:var(--input-background);border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);padding:.75rem;color:var(--foreground);transition:.2s}
     .textarea{background:var(--input-background);border:1px solid var(--border);border-radius:calc(var(--radius) - 2px);padding:.75rem;color:var(--foreground);transition:.2s;min-height:80px}
     .badge{background:var(--secondary);color:var(--secondary-foreground);border-radius:calc(var(--radius) - 4px);padding:.25rem .75rem;font-size:.75rem;font-weight:500;border:1px solid var(--border)}
-    .progress-container{width:100%;height:8px;background:var(--muted);border-radius:9999px;overflow:hidden}
+    .progress-container{width:100%;height:10px;background:color-mix(in srgb, var(--foreground) 11%, transparent);border-radius:9999px;overflow:hidden}
+    .set-pips{display:flex;gap:4px;width:100%}
+    .set-pips span{flex:1 1 0;height:10px;min-width:0;border-radius:5px;background:color-mix(in srgb, var(--foreground) 13%, transparent);transition:background .2s ease}
+    .set-pips span.on{background:linear-gradient(135deg,#34d399,#059669)}
     .progress-bar{height:100%;background:var(--success-soft);border-radius:9999px;transition:width .3s ease}
     .tabs-list{background:var(--muted);border-radius:calc(var(--radius) + 6px);padding:.35rem;border:1px solid var(--border);box-shadow:0 1px 0 rgba(0,0,0,.02);display:inline-flex;align-items:center;gap:.25rem}
     .tab-trigger{display:inline-flex;align-items:center;gap:.5rem;height:42px;padding:0 .95rem;border-radius:calc(var(--radius) - 2px);font-weight:600;letter-spacing:.1px;color:var(--foreground);border:none;background:transparent}
@@ -135,6 +138,14 @@
     header .hdr-tabs { order: 3; display: flex; width: 100%; }
     header .hdr-tabs .tab-trigger { flex: 1 1 0; justify-content: center; }
     .btn-outline { white-space: nowrap; }
+    button.h-9, input.h-9 { height: 44px; }
+    button.h-8 { height: 40px; }
+    button.h-9.w-9 { width: 44px; }
+    button.btn-outline.h-6 { height: 32px; padding: 0 .75rem; }
+    .reps-input { height: 44px; }
+    .day-strip { display: grid !important; grid-template-columns: repeat(7, 1fr); gap: 6px !important; }
+    .day-strip .day-pill { min-width: 0; width: 100%; height: 42px; padding: 0; position: relative; }
+    .day-strip .day-pill .dot { position: absolute; bottom: 5px; left: 50%; margin: 0; transform: translateX(-50%); }
     .card-headline { flex-wrap: wrap; }
     .card-headline .actions { min-width: 0; max-width: 100%; }
     .select-trigger { max-width: 100%; min-width: 0; }   /* long option labels no longer stretch the page */
@@ -162,6 +173,15 @@
     const Switch = ({ checked, onChange, className = "" }) => (
       <label className={`switch ${className}`}><input type="checkbox" checked={checked} onChange={(e)=>onChange?.(e.target.checked)} /><span className="slider"></span></label>
     );
+    // One pip per planned set (falls back to a plain bar for very high targets)
+    const SetPips = ({ done, total }) => {
+      if (!(total >= 1 && total <= 24)) return <Progress value={total > 0 ? (done / total) * 100 : 0}/>;
+      return (
+        <div className="set-pips" role="img" aria-label={`${done} of ${total} sets completed`}>
+          {Array.from({ length: total }, (_, i) => <span key={i} className={i < done ? 'on' : ''}/>)}
+        </div>
+      );
+    };
     const Progress = ({ value }) => (<div className="progress-container"><div className="progress-bar" style={{width: `${Math.min(100,Math.max(0,value))}%`}}/></div>);
 
     // Rest Timer Card: provides a customizable countdown timer for rest periods between sets.
@@ -242,7 +262,7 @@
               <h3 className="text-lg font-semibold">Rest Timer</h3>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-center gap-3">
             {/* Use a native number input for the timer field for consistent padding and styling. */}
             <input
               type="number"
@@ -725,7 +745,7 @@
                 <h3 className="text-lg font-semibold">Weight Entry</h3>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row items-center gap-3">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap items-center gap-3">
               {/* using our Input component ensures consistent styling across themes */}
               {/* Use a native input element here so we have full control over styling. The `input` class
                   provides consistent styling across themes, while `px-3` gives horizontal padding.
@@ -931,7 +951,7 @@
               <span className="percent-chip">{pct}%</span>
             </div>
 
-            <Progress value={pct}/>
+            <SetPips done={counts[ex.key]||0} total={ex.target}/>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1">
                 <Button size="sm" variant="outline" className="h-9 w-9 p-0" onClick={()=>onDec(ex.key)}><Minus/></Button>
@@ -1079,8 +1099,8 @@
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 mb-3">
-              <div className="md:col-span-4">
+            <div className="flex flex-wrap items-end gap-x-8 gap-y-3 mb-3">
+              <div>
                 <div className="field-label">Week of</div>
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="sm" aria-label="Previous week" onClick={()=> setState(p=>({...p, weekOf: startOfISOWeek(addDays(p.weekOf||isoToday(), -7))}))}>‹</Button>
@@ -1095,13 +1115,13 @@
                         setState((p) => ({ ...p, weekOf: startOfISOWeek(e.target.value || isoToday()) }))
                       }
                       /* Force light background and dark text even in dark mode */
-                      style={{ background: 'var(--input-background)', color: 'var(--foreground)' }}
+                      style={{ background: 'var(--input-background)', color: 'var(--foreground)', paddingLeft: '2.1rem' }}
                     />
                   </div>
                   <Button variant="ghost" size="sm" aria-label="Next week" onClick={()=> setState(p=>({...p, weekOf: startOfISOWeek(addDays(p.weekOf||isoToday(), 7))}))}>›</Button>
                 </div>
               </div>
-              <div className="md:col-span-4">
+              <div>
                 <div className="field-label">Frequency</div>
                 <div className="flex items-center gap-2">
                   <Button size="sm" variant={state.frequency==='3x' ? 'primary' : 'outline'} className="h-8 px-3" onClick={() => setState(prev => ({ ...prev, frequency: '3x' }))}>3×</Button>
@@ -1110,7 +1130,7 @@
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 mb-4">
+            <div className="flex flex-wrap items-center gap-2 mb-4 day-strip">
               {days.map((d, idx) => {
                 const isActive = (state.viewDate || isoToday()) === d.date;
                 const cls = ['day-pill', workIdx.has(idx) ? 'train' : 'rest', isActive ? 'active' : ''].join(' ').trim();
@@ -1722,7 +1742,16 @@
                 ))}
               </div>
             )}
-            <div className="relative" style={{height:'320px'}}><canvas ref={chartRef}></canvas></div>
+            <div className="relative" style={{height:'320px'}}>
+              <canvas ref={chartRef} style={nonZero.length === 0 ? {visibility:'hidden'} : undefined}></canvas>
+              {nonZero.length === 0 && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6" style={{color:'var(--muted-foreground)'}}>
+                  <div className="text-3xl mb-2">📈</div>
+                  <div className="text-sm font-medium" style={{color:'var(--foreground)'}}>Nothing to chart yet</div>
+                  <div className="text-xs mt-1">Log a few sets on the Dashboard and your weekly volume will show up here.</div>
+                </div>
+              )}
+            </div>
             <div className="mt-3 text-xs" style={{color:'var(--muted-foreground)'}}>
               💡 <strong>Pro tip:</strong> Consider a deload every 4–8 weeks (reduce volume ~30–50%, keep technique crisp, leave 2–3 RIR).
             </div>
@@ -1750,7 +1779,11 @@
           const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'weekly-summary.csv'; a.click(); URL.revokeObjectURL(a.href);
         };
 
-        const clearAll = () => { if(window.confirm('This will delete all log data. Are you sure?')) setLogs([]); };
+        const clearAll = () => {
+          const weeks = logs.filter(w => w && w.entries && w.entries.length > 0).length;
+          const typed = window.prompt(`This permanently deletes all workout logs (${weeks} ${weeks === 1 ? 'week' : 'weeks'}). Weight entries are not affected and this cannot be undone.\n\nTip: save a backup first with the download button at the top.\n\nType DELETE to confirm.`);
+          if (typed && typed.trim().toUpperCase() === 'DELETE') setLogs([]);
+        };
 
         const rowDelta = (rows, i, key) => {
           if (i >= rows.length - 1) return null;
@@ -1777,10 +1810,12 @@
 
         return (
           <div>
-            <button
+            <div
+              role="button" tabIndex={0} aria-expanded={open}
               className="w-full flex items-center justify-between px-4 py-3 rounded-xl border hover-lift"
               style={{background:'var(--card)', borderColor:'var(--border)', cursor:'pointer'}}
               onClick={() => setOpen(v => !v)}
+              onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) { e.preventDefault(); setOpen(v => !v); } }}
             >
               <div className="flex items-center gap-2">
                 <TrendingUp className="icon-primary" size={16}/>
@@ -1789,10 +1824,9 @@
               </div>
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); exportCSV(); }}><Download/><span className="ml-1 hidden sm:inline">CSV</span></Button>
-                <Button variant="danger" size="sm" onClick={(e) => { e.stopPropagation(); clearAll(); }}><Broom/><span className="ml-1 hidden sm:inline">Clear</span></Button>
                 <Caret dir={open ? 'up' : 'down'}/>
               </div>
-            </button>
+            </div>
             {open && (
               <div className="card mt-2 p-4">
                 <div className="flex items-center gap-2 mb-4">
@@ -1828,6 +1862,10 @@
                       })}
                     </tbody>
                   </table>
+                </div>
+                <div className="flex items-center justify-between gap-3 flex-wrap mt-4 pt-3" style={{borderTop:'1px solid var(--border)'}}>
+                  <span className="text-xs" style={{color:'var(--muted-foreground)'}}>Removes all workout logs from this device. Weights are kept.</span>
+                  <Button variant="outline" size="sm" onClick={clearAll} style={{color:'#dc2626', borderColor:'rgba(220,38,38,.45)'}}><Broom/><span className="ml-1">Delete all logs…</span></Button>
                 </div>
               </div>
             )}
